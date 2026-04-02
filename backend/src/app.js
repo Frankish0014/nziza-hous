@@ -4,20 +4,32 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import path from 'node:path';
 import routes from './routes/index.js';
+import { env } from './config/env.js';
 import { loggerMiddleware } from './middleware/loggerMiddleware.js';
 import { errorMiddleware } from './middleware/errorMiddleware.js';
 
 const app = express();
 
-app.use(helmet());
-app.use(cors());
+if (env.trustProxy) {
+  app.set('trust proxy', 1);
+}
+
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+app.use(
+  cors({
+    origin: env.corsOrigin,
+    credentials: true,
+  }),
+);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(loggerMiddleware);
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 300,
+    max: 400,
+    standardHeaders: true,
+    legacyHeaders: false,
   }),
 );
 

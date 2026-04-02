@@ -27,7 +27,7 @@ export const listBookings = async () => {
     `SELECT b.*, u.name AS user_name, u.email AS user_email,
             s.name AS service_name, s.type AS service_type
      FROM bookings b
-     JOIN users u ON u.id = b.user_id
+     LEFT JOIN users u ON u.id = b.user_id
      JOIN services s ON s.id = b.service_id
      ORDER BY b.created_at DESC`,
   );
@@ -79,10 +79,11 @@ export const listBookedSlotsByServiceAndDates = async ({ serviceId, dates }) => 
 
 export const updateBookingStatus = async (id, status) => {
   const { rows } = await query(
-    `UPDATE bookings
+    `UPDATE bookings b
      SET status = $2
-     WHERE id = $1
-     RETURNING *`,
+     FROM services s
+     WHERE b.id = $1 AND s.id = b.service_id
+     RETURNING b.*, s.name AS service_name`,
     [id, status],
   );
   return rows[0] || null;

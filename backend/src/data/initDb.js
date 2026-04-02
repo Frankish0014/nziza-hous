@@ -1,10 +1,28 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'node:url';
+import { env } from '../config/env.js';
 import { query } from '../config/db.js';
+import { createUser, findByEmail } from '../repositories/userRepository.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+async function seedAdminFromEnv() {
+  if (!env.seedAdminEmail || !env.seedAdminPassword) return;
+  const existing = await findByEmail(env.seedAdminEmail);
+  if (existing) return;
+  const passwordHash = await bcrypt.hash(env.seedAdminPassword, 12);
+  await createUser({
+    name: env.seedAdminName,
+    email: env.seedAdminEmail,
+    passwordHash,
+    roleName: 'admin',
+  });
+  // eslint-disable-next-line no-console
+  console.log(`[db] Seeded admin user: ${env.seedAdminEmail}`);
+}
 
 export const initDb = async () => {
   const schemaPath = path.resolve(__dirname, '../models/schema.sql');
@@ -26,6 +44,7 @@ export const initDb = async () => {
   await query(`CREATE INDEX IF NOT EXISTS idx_bookings_email ON bookings(email);`);
 
   await seedDefaultServicesIfEmpty();
+  await seedAdminFromEnv();
 };
 
 const DEFAULT_SERVICES = [

@@ -6,6 +6,13 @@ import {
   getServices,
   uploadPaymentProof,
 } from '../services/platformService';
+import ScrollReveal from '../components/ScrollReveal';
+
+const steps = [
+  { n: '1', label: 'Select service' },
+  { n: '2', label: 'Time & payment' },
+  { n: '3', label: 'Confirmation' },
+];
 
 export default function BookingPage() {
   const [services, setServices] = useState([]);
@@ -24,7 +31,7 @@ export default function BookingPage() {
   });
   const [proofFile, setProofFile] = useState(null);
   const [message, setMessage] = useState('');
-  const [availability, setAvailability] = useState([]); // [{ date: 'YYYY-MM-DD', slots: ['08:00-09:00', ...] }]
+  const [availability, setAvailability] = useState([]);
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
   const [availabilityError, setAvailabilityError] = useState('');
   const [servicesLoading, setServicesLoading] = useState(true);
@@ -38,7 +45,10 @@ export default function BookingPage() {
       setServices(Array.isArray(serviceData) ? serviceData : []);
     } catch {
       setServices([]);
-      setServicesError('Could not load services. Check that the API is running and your VITE_API_URL is correct.');
+      setServicesError(
+        'Could not reach the API. Start PostgreSQL first (e.g. npm run db:up from the repo root), then restart the backend. ' +
+          'Ensure frontend/.env has VITE_API_URL=http://localhost:4000/api',
+      );
     } finally {
       setServicesLoading(false);
     }
@@ -70,15 +80,12 @@ export default function BookingPage() {
     setAvailabilityError('');
     try {
       const resp = await getServiceAvailability(serviceId);
-      // resp shape: { serviceId, from, to, data: [{date, slots}] }
       const next = Array.isArray(resp?.data) ? resp.data : [];
       setAvailability(next);
 
       if (!form.bookingDate && next.length) {
-        // First load for a fresh service selection: pick the first available date.
         setForm((prev) => ({ ...prev, bookingDate: next[0].date, timeSlot: '' }));
       } else if (form.bookingDate && !next.some((d) => d.date === form.bookingDate)) {
-        // If the selected date is not in the returned list, clear selections.
         setForm((prev) => ({ ...prev, bookingDate: '', timeSlot: '' }));
       }
     } catch {
@@ -131,214 +138,284 @@ export default function BookingPage() {
     }
   };
 
+  const stepActive = form.serviceId ? (form.bookingDate && form.timeSlot ? 3 : 2) : 1;
+
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-16 lg:grid-cols-2">
-      <section className="glass-panel rounded-2xl p-6">
-        <p className="text-xs uppercase tracking-[0.25em] text-[#F77F00]">Instant Reservation</p>
-        <h1 className="mt-2 text-3xl font-semibold text-stone-900 md:text-4xl">Book an Experience</h1>
-        <p className="mt-2 text-sm text-stone-700">
-          Fill in your contact details and payment proof. We will confirm your booking via email and phone.
+    <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
+      <ScrollReveal>
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-accent)]">Reservations</p>
+        <h1 className="font-display mt-4 text-4xl font-medium tracking-tight text-[var(--nh-ink)] md:text-5xl">
+          Book an experience
+        </h1>
+        <p className="mt-4 max-w-2xl text-[var(--nh-ink-muted)]">
+          Select your venue, choose an available slot, and upload payment proof. Our team confirms every booking personally.
         </p>
-        <div className="mt-4 grid gap-2 md:grid-cols-3">
-          {[
-            ['Step 1', 'Select your service'],
-            ['Step 2', 'Upload payment proof'],
-            ['Step 3', 'Receive confirmation'],
-          ].map(([step, desc]) => (
-            <div key={step} className="rounded-xl border border-stone-200 bg-white/80 p-3">
-              <p className="text-xs uppercase tracking-wider text-[#F77F00]">{step}</p>
-              <p className="mt-1 text-sm text-stone-700">{desc}</p>
-            </div>
-          ))}
-        </div>
-        <form onSubmit={submit} className="mt-6 space-y-4">
-          <input
-            type="text"
-            placeholder="Full name"
-            value={form.fullName}
-            onChange={(e) => setForm((prev) => ({ ...prev, fullName: e.target.value }))}
-            className="input-brand"
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email address"
-            value={form.email}
-            onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
-            className="input-brand"
-            required
-          />
-          <input
-            type="tel"
-            placeholder="Phone number"
-            value={form.phone}
-            onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
-            className="input-brand"
-            required
-          />
-          <div>
-            <label htmlFor="booking-service" className="mb-1 block text-sm font-medium text-stone-700">
-              Service
-            </label>
-            <select
-              id="booking-service"
-              value={form.serviceId}
-              onChange={(e) => {
-                const nextServiceId = e.target.value;
-                setForm((prev) => ({ ...prev, serviceId: nextServiceId, bookingDate: '', timeSlot: '' }));
-                void loadAvailability(nextServiceId);
-              }}
-              className="input-brand"
-              required
-              disabled={servicesLoading || (!services.length && !servicesError)}
-            >
-              <option value="">
-                {servicesLoading ? 'Loading services…' : services.length ? 'Select a service' : 'No services available'}
-              </option>
-              {services.map((service) => (
-                <option key={service.id} value={service.id}>
-                  {service.name}
-                  {service.type ? ` — ${String(service.type).replace('_', ' ')}` : ''}
-                </option>
-              ))}
-            </select>
-            {servicesError && (
-              <div className="mt-2 flex flex-wrap items-center gap-3">
-                <p className="text-sm text-red-700">{servicesError}</p>
-                <button
-                  type="button"
-                  onClick={() => void loadServices()}
-                  className="text-sm font-medium text-[#F77F00] underline"
+      </ScrollReveal>
+
+      <ScrollReveal delay={60} className="mt-10">
+        <div className="flex flex-wrap gap-3 rounded-3xl border border-[var(--nh-border)] bg-white/70 p-4 md:gap-6 md:p-5">
+          {steps.map((s, i) => {
+            const reached = i + 1 <= stepActive;
+            return (
+              <div key={s.n} className="flex min-w-[140px] flex-1 items-center gap-3">
+                <div
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-display text-lg font-medium transition ${
+                    reached
+                      ? 'bg-[var(--nh-deep)] text-[#faf6ef]'
+                      : 'border border-[var(--nh-border)] bg-[var(--nh-bg)] text-[var(--nh-ink-muted)]'
+                  }`}
                 >
-                  Retry
-                </button>
+                  {s.n}
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--nh-ink-muted)]">Step {s.n}</p>
+                  <p className="text-sm font-semibold text-[var(--nh-ink)]">{s.label}</p>
+                </div>
               </div>
-            )}
-            {!servicesLoading && !servicesError && services.length === 0 && (
-              <p className="mt-2 text-sm text-stone-600">
-                No active services in the database yet. Start the backend with PostgreSQL connected — default services are
-                created automatically on first run.
-              </p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="booking-date" className="mb-1 block text-sm font-medium text-stone-700">
-              Date
-            </label>
-            <select
-              id="booking-date"
-              value={form.bookingDate}
-              onChange={(e) => setForm((prev) => ({ ...prev, bookingDate: e.target.value, timeSlot: '' }))}
-              className="input-brand"
-              required
-              disabled={availabilityLoading || !availability.length}
-            >
-              <option value="">
-                {availabilityLoading ? 'Loading availability…' : availability.length ? 'Select a date' : 'No available dates'}
-              </option>
-              {availability.map((d) => (
-                <option key={d.date} value={d.date}>
-                  {formatDateLabel(d.date)}
-                </option>
-              ))}
-            </select>
-            {availabilityError && <p className="mt-2 text-sm text-red-700">{availabilityError}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="booking-slot" className="mb-1 block text-sm font-medium text-stone-700">
-              Time slot
-            </label>
-            <select
-              id="booking-slot"
-              value={form.timeSlot}
-              onChange={(e) => setForm((prev) => ({ ...prev, timeSlot: e.target.value }))}
-              className="input-brand"
-              required
-              disabled={!form.bookingDate || availabilityLoading || !availableSlots.length}
-            >
-              <option value="">
-                {!form.bookingDate
-                  ? 'Select a date first'
-                  : !availableSlots.length
-                    ? 'No slots available'
-                    : 'Select a time slot'}
-              </option>
-              {availableSlots.map((slot) => (
-                <option key={slot} value={slot}>
-                  {slot}
-                </option>
-              ))}
-            </select>
-          </div>
-          <select
-            value={form.paymentMethod}
-            onChange={(e) => setForm((prev) => ({ ...prev, paymentMethod: e.target.value }))}
-            className="input-brand"
-            required
-          >
-            <option value="mobile_money">Mobile Money</option>
-            <option value="bank_transfer">Bank Transfer</option>
-            <option value="card">Card</option>
-          </select>
-          <input
-            type="file"
-            accept="image/*,application/pdf"
-            onChange={(e) => setProofFile(e.target.files?.[0] || null)}
-            className="input-brand"
-            required
-          />
-          <textarea
-            placeholder="Additional notes (optional)"
-            value={form.notes}
-            onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
-            className="input-brand h-24"
-          />
-          <button type="submit" className="btn-primary rounded-full px-7 py-3 font-semibold">
-            Submit Booking
-          </button>
-        </form>
-        {message && (
-          <p className="mt-4 rounded-xl border border-stone-300 bg-white/90 p-3 text-stone-800">{message}</p>
-        )}
-      </section>
-
-      <section className="glass-panel rounded-2xl p-6">
-        <h2 className="text-2xl font-semibold text-stone-900">Your Booking History (by email)</h2>
-        <p className="mt-2 text-sm text-stone-700">Enter the same email used during booking to see your latest status updates.</p>
-        <div className="mt-4 flex gap-2">
-          <input
-            type="email"
-            placeholder="your@email.com"
-            value={historyEmail}
-            onChange={(e) => setHistoryEmail(e.target.value)}
-            className="input-brand"
-          />
-          <button
-            type="button"
-            onClick={() => loadHistory(historyEmail)}
-            className="btn-primary rounded-full px-5 py-2 font-semibold"
-          >
-            Check
-          </button>
+            );
+          })}
         </div>
-        <div className="mt-4 space-y-3">
-          {historyLoading && <p className="text-stone-600">Checking bookings...</p>}
-          {history.map((booking) => (
-            <article key={booking.id} className="elevated-hover rounded-2xl border border-stone-200 bg-white/85 p-4">
-              <p className="font-medium text-stone-900">{booking.service_name}</p>
-              <p className="text-sm text-stone-600">
-                {booking.booking_date} | {booking.time_slot}
+      </ScrollReveal>
+
+      <div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-12">
+        <ScrollReveal>
+          <section className="glass-panel rounded-[2rem] p-6 md:p-8">
+            <h2 className="font-display text-xl font-medium text-[var(--nh-ink)] md:text-2xl">Your details</h2>
+            <p className="mt-2 text-sm text-[var(--nh-ink-muted)]">We use this to confirm and reach you if plans shift.</p>
+
+            <form onSubmit={submit} className="mt-8 space-y-4">
+              <input
+                type="text"
+                placeholder="Full name"
+                value={form.fullName}
+                onChange={(e) => setForm((prev) => ({ ...prev, fullName: e.target.value }))}
+                className="input-brand"
+                required
+              />
+              <input
+                type="email"
+                placeholder="Email address"
+                value={form.email}
+                onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+                className="input-brand"
+                required
+              />
+              <input
+                type="tel"
+                placeholder="Phone number"
+                value={form.phone}
+                onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+                className="input-brand"
+                required
+              />
+
+              <div className="rounded-2xl border border-[var(--nh-border)] bg-[var(--nh-bg)]/50 p-4 md:p-5">
+                <p className="text-xs font-bold uppercase tracking-wider text-[var(--nh-accent)]">Experience</p>
+                <label htmlFor="booking-service" className="mt-3 mb-1.5 block text-sm font-medium text-[var(--nh-ink)]">
+                  Service
+                </label>
+                <select
+                  id="booking-service"
+                  value={form.serviceId}
+                  onChange={(e) => {
+                    const nextServiceId = e.target.value;
+                    setForm((prev) => ({ ...prev, serviceId: nextServiceId, bookingDate: '', timeSlot: '' }));
+                    void loadAvailability(nextServiceId);
+                  }}
+                  className="input-brand"
+                  required
+                  disabled={servicesLoading || (!services.length && !servicesError)}
+                >
+                  <option value="">
+                    {servicesLoading ? 'Loading services…' : services.length ? 'Select a service' : 'No services available'}
+                  </option>
+                  {services.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name}
+                      {service.type ? ` — ${String(service.type).replace('_', ' ')}` : ''}
+                    </option>
+                  ))}
+                </select>
+                {servicesError && (
+                  <div className="mt-2 flex flex-wrap items-center gap-3">
+                    <p className="text-sm text-red-700">{servicesError}</p>
+                    <button
+                      type="button"
+                      onClick={() => void loadServices()}
+                      className="text-sm font-semibold text-[var(--nh-accent)] underline underline-offset-2"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+                {!servicesLoading && !servicesError && services.length === 0 && (
+                  <p className="mt-2 text-sm text-[var(--nh-ink-muted)]">
+                    No active services in the database yet. Start the backend with PostgreSQL connected — default services are
+                    created automatically on first run.
+                  </p>
+                )}
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="booking-date" className="mb-1.5 block text-sm font-medium text-[var(--nh-ink)]">
+                    Date
+                  </label>
+                  <select
+                    id="booking-date"
+                    value={form.bookingDate}
+                    onChange={(e) => setForm((prev) => ({ ...prev, bookingDate: e.target.value, timeSlot: '' }))}
+                    className="input-brand"
+                    required
+                    disabled={availabilityLoading || !availability.length}
+                  >
+                    <option value="">
+                      {availabilityLoading ? 'Loading availability…' : availability.length ? 'Select a date' : 'No available dates'}
+                    </option>
+                    {availability.map((d) => (
+                      <option key={d.date} value={d.date}>
+                        {formatDateLabel(d.date)}
+                      </option>
+                    ))}
+                  </select>
+                  {availabilityError && <p className="mt-2 text-sm text-red-700">{availabilityError}</p>}
+                </div>
+                <div>
+                  <label htmlFor="booking-slot" className="mb-1.5 block text-sm font-medium text-[var(--nh-ink)]">
+                    Time slot
+                  </label>
+                  <select
+                    id="booking-slot"
+                    value={form.timeSlot}
+                    onChange={(e) => setForm((prev) => ({ ...prev, timeSlot: e.target.value }))}
+                    className="input-brand"
+                    required
+                    disabled={!form.bookingDate || availabilityLoading || !availableSlots.length}
+                  >
+                    <option value="">
+                      {!form.bookingDate
+                        ? 'Select a date first'
+                        : !availableSlots.length
+                          ? 'No slots available'
+                          : 'Select a time slot'}
+                    </option>
+                    {availableSlots.map((slot) => (
+                      <option key={slot} value={slot}>
+                        {slot}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-[var(--nh-border)] bg-white/60 p-4">
+                <label htmlFor="booking-pay" className="mb-1.5 block text-sm font-medium text-[var(--nh-ink)]">
+                  Payment method
+                </label>
+                <select
+                  id="booking-pay"
+                  value={form.paymentMethod}
+                  onChange={(e) => setForm((prev) => ({ ...prev, paymentMethod: e.target.value }))}
+                  className="input-brand"
+                  required
+                >
+                  <option value="mobile_money">Mobile Money</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="card">Card</option>
+                </select>
+                <label htmlFor="booking-proof" className="mt-4 mb-1.5 block text-sm font-medium text-[var(--nh-ink)]">
+                  Proof of payment
+                </label>
+                <input
+                  id="booking-proof"
+                  type="file"
+                  accept="image/*,application/pdf"
+                  onChange={(e) => setProofFile(e.target.files?.[0] || null)}
+                  className="input-brand py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[var(--nh-deep)] file:px-3 file:py-2 file:text-xs file:font-semibold file:text-[#faf6ef]"
+                  required
+                />
+              </div>
+
+              <textarea
+                placeholder="Additional notes (optional)"
+                value={form.notes}
+                onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
+                className="input-brand min-h-24"
+              />
+
+              <button type="submit" className="btn-primary w-full rounded-full py-3.5 text-sm font-semibold sm:w-auto sm:px-10">
+                Submit booking
+              </button>
+            </form>
+
+            {message && (
+              <p
+                className={`mt-6 rounded-2xl border px-4 py-3 text-sm ${
+                  message.includes('success')
+                    ? 'border-emerald-200/90 bg-emerald-50/90 text-emerald-900'
+                    : 'border-amber-200/90 bg-amber-50/90 text-amber-950'
+                }`}
+                role="status"
+              >
+                {message}
               </p>
-              <p className="mt-2 inline-flex rounded-full border-2 border-[#F77F00]/40 bg-[#F77F00]/10 px-3 py-1 text-xs uppercase tracking-wider text-[#d96d00]">
-                {booking.status}
-              </p>
-            </article>
-          ))}
-          {!historyLoading && !history.length && <p className="text-stone-500">No bookings found for this email yet.</p>}
-        </div>
-      </section>
+            )}
+          </section>
+        </ScrollReveal>
+
+        <ScrollReveal delay={80}>
+          <section className="glass-panel rounded-[2rem] p-6 md:p-8">
+            <h2 className="font-display text-xl font-medium text-[var(--nh-ink)] md:text-2xl">Booking history</h2>
+            <p className="mt-2 text-sm text-[var(--nh-ink-muted)]">
+              Enter the email you used when reserving — we&apos;ll pull your latest statuses.
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={historyEmail}
+                onChange={(e) => setHistoryEmail(e.target.value)}
+                className="input-brand sm:flex-1"
+              />
+              <button
+                type="button"
+                onClick={() => loadHistory(historyEmail)}
+                className="btn-primary rounded-full px-6 py-3 text-sm font-semibold sm:shrink-0"
+              >
+                Check
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              {historyLoading && (
+                <div className="flex items-center gap-3 text-sm text-[var(--nh-ink-muted)]">
+                  <span className="nh-skeleton inline-block h-4 w-4 rounded-full" />
+                  Checking bookings…
+                </div>
+              )}
+              {history.map((booking) => (
+                <article
+                  key={booking.id}
+                  className="card-rise rounded-2xl border border-[var(--nh-border)] bg-white/85 p-5"
+                >
+                  <p className="font-display text-lg font-medium text-[var(--nh-ink)]">{booking.service_name}</p>
+                  <p className="mt-1 text-sm text-[var(--nh-ink-muted)]">
+                    {booking.booking_date} · {booking.time_slot}
+                  </p>
+                  <p className="mt-3 inline-flex rounded-full bg-[var(--nh-accent-soft)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--nh-accent)]">
+                    {booking.status}
+                  </p>
+                </article>
+              ))}
+              {!historyLoading && !history.length && (
+                <p className="rounded-2xl border border-dashed border-[var(--nh-border)] bg-[var(--nh-bg)]/40 px-4 py-8 text-center text-sm text-[var(--nh-ink-muted)]">
+                  No bookings found for this email yet.
+                </p>
+              )}
+            </div>
+          </section>
+        </ScrollReveal>
+      </div>
     </main>
   );
 }
-

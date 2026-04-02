@@ -1,49 +1,95 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import BrandLogo from './BrandLogo';
 import useAuth from '../hooks/useAuth';
 
-const navClass = ({ isActive }) =>
-  `text-xs md:text-sm tracking-[0.2em] uppercase transition ${
-    isActive ? 'text-[#F77F00]' : 'text-stone-600 hover:text-stone-900'
-  }`;
+const links = [
+  { to: '/', label: 'Home' },
+  { to: '/about', label: 'About' },
+  { to: '/services', label: 'Experiences' },
+  { to: '/booking', label: 'Book' },
+  { to: '/contact', label: 'Contact' },
+];
 
 export default function Navbar() {
   const { isAuthenticated, isAdmin, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-stone-300/60 bg-white/85 backdrop-blur-xl shadow-sm">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-        <Link to="/" className="text-lg font-semibold tracking-[0.24em] text-stone-900 md:text-xl">
-          NZIZA HOUSE
-        </Link>
+    <header
+      className={`sticky top-0 z-50 transition-[background,box-shadow,border-color] duration-300 ${
+        scrolled
+          ? 'border-[var(--nh-border)] bg-[var(--nh-cream)]/92 shadow-[0_8px_32px_rgba(20,18,16,0.06)] backdrop-blur-xl'
+          : 'border-transparent bg-[var(--nh-cream)]/70 backdrop-blur-md'
+      } border-b`}
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5 md:py-4">
+        <BrandLogo height={100} className="text-[var(--nh-ink)]" onNavigate={() => setMenuOpen(false)} />
+
         <button
           type="button"
-          className="rounded-md border border-stone-400 px-3 py-1 text-xs uppercase tracking-widest text-stone-700 md:hidden"
-          onClick={() => setMenuOpen((prev) => !prev)}
+          className="relative z-[60] flex h-11 w-11 flex-col items-center justify-center rounded-xl border border-[var(--nh-border)] bg-white/80 text-[var(--nh-ink)] shadow-sm md:hidden"
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          onClick={() => setMenuOpen((p) => !p)}
         >
-          Menu
+          <span
+            className={`block h-0.5 w-5 rounded-full bg-current transition-transform duration-300 ${
+              menuOpen ? 'translate-y-[3px] rotate-45' : ''
+            }`}
+          />
+          <span
+            className={`mt-1.5 block h-0.5 w-5 rounded-full bg-current transition-opacity duration-300 ${
+              menuOpen ? 'opacity-0' : ''
+            }`}
+          />
+          <span
+            className={`mt-1.5 block h-0.5 w-5 rounded-full bg-current transition-transform duration-300 ${
+              menuOpen ? '-translate-y-[9px] -rotate-45' : ''
+            }`}
+          />
         </button>
-        <nav
-          className={`${menuOpen ? 'flex' : 'hidden'} w-full flex-col gap-3 border-t border-stone-200 pt-3 md:flex md:w-auto md:flex-row md:items-center md:gap-5 md:border-0 md:pt-0`}
-        >
-          <NavLink to="/" className={navClass}>
-            Home
-          </NavLink>
-          <NavLink to="/about" className={navClass}>
-            About
-          </NavLink>
-          <NavLink to="/services" className={navClass}>
-            Services
-          </NavLink>
-          <NavLink to="/booking" className={navClass}>
-            Booking
-          </NavLink>
-          <NavLink to="/contact" className={navClass}>
-            Contact
-          </NavLink>
+
+        <nav className="hidden items-center gap-1 md:flex md:gap-2">
+          {links.map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `nav-link-pill rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] ${
+                  isActive
+                    ? 'text-[var(--nh-accent)] is-active'
+                    : 'text-[var(--nh-ink-muted)] hover:text-[var(--nh-ink)]'
+                }`
+              }
+            >
+              {label}
+            </NavLink>
+          ))}
           {isAdmin && (
-            <NavLink to="/admin" className={navClass}>
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `nav-link-pill rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] ${
+                  isActive ? 'text-[var(--nh-accent)] is-active' : 'text-[var(--nh-ink-muted)] hover:text-[var(--nh-ink)]'
+                }`
+              }
+            >
               Admin
             </NavLink>
           )}
@@ -51,20 +97,84 @@ export default function Navbar() {
             <button
               type="button"
               onClick={logout}
-              className="rounded-full border-2 border-[#F77F00] px-4 py-1.5 text-xs uppercase tracking-wider text-[#F77F00] transition hover:bg-[#F77F00]/10"
+              className="ml-2 rounded-full border border-[var(--nh-border)] bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--nh-ink)] transition hover:border-[var(--nh-accent)]/40 hover:text-[var(--nh-accent)]"
             >
-              Logout
+              Log out
             </button>
           ) : (
-            <NavLink
+            <Link
               to="/auth"
-              className="rounded-full border-2 border-[#F77F00] px-4 py-1.5 text-xs uppercase tracking-wider text-[#F77F00] transition hover:bg-[#F77F00]/10"
+              className="btn-primary ml-2 rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.1em]"
             >
-              Login
-            </NavLink>
+              Sign in
+            </Link>
           )}
         </nav>
       </div>
+
+      <div
+        className={`fixed inset-0 z-[55] bg-[var(--nh-deep)]/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+          menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        aria-hidden
+        onClick={() => setMenuOpen(false)}
+      />
+
+      <nav
+        className={`fixed inset-x-0 top-0 z-[56] flex max-h-[min(92vh,540px)] flex-col gap-1 overflow-y-auto rounded-b-3xl border-b border-[var(--nh-border)] bg-[var(--nh-cream)] px-4 pb-8 pt-20 shadow-2xl transition-[transform,opacity] duration-300 ease-out md:hidden ${
+          menuOpen ? 'translate-y-0 opacity-100' : '-translate-y-[8px] opacity-0 pointer-events-none'
+        }`}
+      >
+        {links.map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            onClick={() => setMenuOpen(false)}
+            className={({ isActive }) =>
+              `rounded-2xl px-4 py-3.5 text-sm font-semibold ${
+                isActive ? 'bg-[var(--nh-accent-soft)] text-[var(--nh-accent)]' : 'text-[var(--nh-ink)]'
+              }`
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
+        {isAdmin && (
+          <NavLink
+            to="/admin"
+            onClick={() => setMenuOpen(false)}
+            className={({ isActive }) =>
+              `rounded-2xl px-4 py-3.5 text-sm font-semibold ${
+                isActive ? 'bg-[var(--nh-accent-soft)] text-[var(--nh-accent)]' : 'text-[var(--nh-ink)]'
+              }`
+            }
+          >
+            Admin
+          </NavLink>
+        )}
+        <div className="mt-4 flex flex-col gap-2 border-t border-[var(--nh-border)] pt-4">
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={() => {
+                logout();
+                setMenuOpen(false);
+              }}
+              className="rounded-2xl border border-[var(--nh-border)] py-3.5 text-sm font-semibold text-[var(--nh-ink)]"
+            >
+              Log out
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              onClick={() => setMenuOpen(false)}
+              className="btn-primary rounded-2xl py-3.5 text-center text-sm font-semibold"
+            >
+              Sign in
+            </Link>
+          )}
+        </div>
+      </nav>
     </header>
   );
 }

@@ -8,7 +8,7 @@ const signToken = (user) =>
     expiresIn: env.jwtExpiresIn,
   });
 
-export const register = async ({ name, email, password, role }) => {
+export const register = async ({ name, email, password }) => {
   const existing = await findByEmail(email);
   if (existing) {
     const err = new Error('Email already in use');
@@ -17,11 +17,10 @@ export const register = async ({ name, email, password, role }) => {
   }
 
   const passwordHash = await bcrypt.hash(password, 12);
-  const normalizedRole = role || 'customer';
-  const user = await createUser({ name, email, passwordHash, roleName: normalizedRole });
-  const token = signToken({ ...user, role: normalizedRole });
+  const user = await createUser({ name, email, passwordHash, roleName: 'customer' });
+  const token = signToken({ ...user, role: 'customer' });
 
-  return { user: { ...user, role: normalizedRole }, token };
+  return { user: { ...user, role: 'customer' }, token };
 };
 
 export const login = async ({ email, password }) => {

@@ -1,5 +1,6 @@
 import * as mediaService from '../services/mediaService.js';
 import { successResponse } from '../utils/apiResponse.js';
+import { publicUploadUrl } from '../utils/publicUrl.js';
 
 export const addMedia = async (req, res, next) => {
   try {
@@ -26,7 +27,7 @@ export const listMediaByService = async (req, res, next) => {
 export const uploadImage = async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No image uploaded' });
-    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const fileUrl = publicUploadUrl(req, req.file.filename);
     return successResponse(res, { url: fileUrl, filename: req.file.filename }, 'Image uploaded', 201);
   } catch (err) {
     return next(err);

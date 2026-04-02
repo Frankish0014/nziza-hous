@@ -8,8 +8,8 @@ import { createServiceSchema, updateServiceSchema } from '../validations/service
 const router = Router();
 
 router.get('/', serviceController.listServices);
-router.get('/:id', serviceController.getServiceById);
 router.get('/:id/availability', serviceAvailabilityController.getAvailability);
+router.get('/:id', serviceController.getServiceById);
 router.post(
   '/',
   authMiddleware,

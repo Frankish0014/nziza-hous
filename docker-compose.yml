@@ -1,0 +1,21 @@
+# Local PostgreSQL for Nziza House (backend requires this before npm run dev:all)
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: nziza-house-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nziza_house
+    ports:
+      - "5432:5432"
+    volumes:
+      - nziza_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nziza_house"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  nziza_pgdata:

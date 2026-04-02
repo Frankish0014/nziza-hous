@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import * as healthController from '../controllers/healthController.js';
 import authRoutes from './authRoutes.js';
 import serviceRoutes from './serviceRoutes.js';
 import bookingRoutes from './bookingRoutes.js';
@@ -8,7 +9,7 @@ import adminRoutes from './adminRoutes.js';
 
 const router = Router();
 
-router.get('/health', (req, res) => res.json({ success: true, message: 'API healthy' }));
+router.get('/health', healthController.getHealth);
 router.use('/auth', authRoutes);
 router.use('/services', serviceRoutes);
 router.use('/bookings', bookingRoutes);

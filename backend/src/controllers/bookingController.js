@@ -1,5 +1,6 @@
 import * as bookingService from '../services/bookingService.js';
 import { successResponse } from '../utils/apiResponse.js';
+import { publicUploadUrl } from '../utils/publicUrl.js';
 
 export const createBooking = async (req, res, next) => {
   try {
@@ -12,9 +13,11 @@ export const createBooking = async (req, res, next) => {
 
 export const getBookings = async (req, res, next) => {
   try {
-    const data = req.query.email
-      ? await bookingService.listBookingsByEmail(req.query.email)
-      : await bookingService.listBookings();
+    const emailParam = req.query.email;
+    const data =
+      emailParam !== undefined && String(emailParam).trim() !== ''
+        ? await bookingService.listBookingsByEmail(String(emailParam).trim())
+        : await bookingService.listBookings();
     return successResponse(res, data);
   } catch (err) {
     return next(err);
@@ -35,7 +38,7 @@ export const updateBookingStatus = async (req, res, next) => {
 export const uploadPaymentProof = async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No payment proof uploaded' });
-    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const fileUrl = publicUploadUrl(req, req.file.filename);
     return successResponse(res, { url: fileUrl }, 'Payment proof uploaded', 201);
   } catch (err) {
     return next(err);

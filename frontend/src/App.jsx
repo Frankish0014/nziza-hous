@@ -13,7 +13,8 @@ import AuthPage from './pages/AuthPage';
 
 function App() {
   return (
-    <div className="min-h-screen bg-[#f7f7f5] text-stone-900">
+    <div className="relative min-h-screen text-[var(--nh-ink)]">
+      <div className="nh-grain" aria-hidden />
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
