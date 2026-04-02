@@ -2,6 +2,9 @@
   "name": "nziza-house-workspace",
   "private": true,
   "version": "1.0.0",
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
     "dev": "npm run dev:all",
     "db:up": "node scripts/db-up.mjs",
@@ -11,8 +14,8 @@
     "dev:backend": "npm run dev --prefix backend",
     "dev:frontend": "npm run dev --prefix frontend",
     "db:check": "npm run db:check --prefix backend",
-    "build": "npm run build --prefix frontend",
-    "lint": "npm run lint --prefix frontend"
+    "build": "npm run build -w frontend",
+    "lint": "npm run lint -w frontend"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
