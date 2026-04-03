@@ -1,0 +1,15 @@
+# Netlify picks this up from the repo root. Build settings may also be set in the Netlify UI.
+
+# Proxy API requests to your deployed backend (optional alternative to VITE_API_URL at build time).
+# Add this block BEFORE the SPA rule, replace the URL, commit, and redeploy.
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://YOUR-BACKEND-HOST.example.com/api/:splat"
+#   status = 200
+#   force = true
+
+# Single-page app: /services etc. must serve index.html (avoids 404 on refresh or deep links).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
