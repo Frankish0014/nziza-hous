@@ -1,9 +1,69 @@
 import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const isWin = process.platform === 'win32';
+
+function loadBackendEnv() {
+  const envPath = path.join(root, 'backend', '.env');
+  if (!fs.existsSync(envPath)) return {};
+  const raw = fs.readFileSync(envPath, 'utf8');
+  const out = {};
+  for (const line of raw.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eq = trimmed.indexOf('=');
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    let val = trimmed.slice(eq + 1).trim();
+    if (
+      (val.startsWith('"') && val.endsWith('"')) ||
+      (val.startsWith("'") && val.endsWith("'"))
+    ) {
+      val = val.slice(1, -1);
+    }
+    out[key] = val;
+  }
+  return out;
+}
+
+/**
+ * True when backend/.env already points at Postgres (Docker compose not needed).
+ */
+function backendEnvLooksConfigured(vars) {
+  const url = vars.DATABASE_URL?.trim();
+  if (url && /^postgres(ql)?:\/\//i.test(url) && url.length > 18) {
+    return true;
+  }
+  const host = vars.DB_HOST?.trim().toLowerCase();
+  if (
+    host &&
+    host !== '127.0.0.1' &&
+    host !== 'localhost'
+  ) {
+    return true;
+  }
+  const pass = vars.DB_PASSWORD?.trim();
+  if (pass && pass.toLowerCase() !== 'postgres') {
+    return true;
+  }
+  return false;
+}
+
+function printConfiguredSkipDocker() {
+  // eslint-disable-next-line no-console
+  console.log(`
+Docker is not available, but backend/.env already has database settings.
+
+You do not need this command. Start the app with:
+
+  npm run dev:all
+
+(Optional) Verify Postgres:  cd backend && npm run db:check
+`);
+}
 
 function printHelp() {
   const winExtra = isWin
@@ -16,6 +76,9 @@ function printHelp() {
          DATABASE_URL=postgresql://user:pass@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
      • Run: npm run dev:all
      (npm run db:up is not needed.)
+
+     If the API logs ETIMEDOUT to port 5432: try Neon's pooled connection string,
+     allow outbound 5432 on your network/VPN, or use local Postgres (option 2).
 
   2) PostgreSQL installer
      • https://www.postgresql.org/download/windows/
@@ -66,6 +129,10 @@ const probe = spawnSync('docker', ['--version'], {
 
 const probeOut = `${probe.stderr || ''}${probe.stdout || ''}`;
 if (probe.error?.code === 'ENOENT' || (probe.status !== 0 && /not recognized|not found|^'docker' /i.test(probeOut))) {
+  if (backendEnvLooksConfigured(loadBackendEnv())) {
+    printConfiguredSkipDocker();
+    process.exit(0);
+  }
   printHelp();
   process.exit(1);
 }
@@ -79,6 +146,10 @@ const result = spawnSync('docker', ['compose', 'up', '-d'], {
 
 if (result.error) {
   if (result.error.code === 'ENOENT') {
+    if (backendEnvLooksConfigured(loadBackendEnv())) {
+      printConfiguredSkipDocker();
+      process.exit(0);
+    }
     printHelp();
     process.exit(1);
   }
