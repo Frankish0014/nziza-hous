@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
+import ContactChannels from './ContactChannels';
 
 const columns = [
   {
@@ -46,6 +47,7 @@ export default function Footer() {
               Plan your visit
               <span aria-hidden>→</span>
             </Link>
+            <ContactChannels variant="footer" />
           </div>
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:gap-16">
             {columns.map((col) => (

@@ -28,6 +28,19 @@
   box-sizing: border-box;
 }
 
+/* Pointer on real controls; text cursor in fields (fixes auth / nav feeling “dead” on clickables) */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+a[href],
+label[for] {
+  cursor: pointer;
+}
+
+button:disabled,
+[role='button'][aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -103,6 +116,7 @@ body {
 }
 
 .btn-primary {
+  cursor: pointer;
   background: linear-gradient(135deg, var(--nh-accent) 0%, #9e4519 100%);
   color: #fffaf5;
   font-weight: 600;
@@ -112,6 +126,12 @@ body {
     transform 0.2s ease,
     box-shadow 0.2s ease,
     filter 0.2s ease;
+}
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.2) brightness(0.95);
+  opacity: 0.75;
 }
 
 .btn-primary:hover {
@@ -147,6 +167,7 @@ body {
 
 .input-brand {
   width: 100%;
+  cursor: text;
   border-radius: 0.875rem;
   border: 1px solid rgba(20, 18, 16, 0.12);
   background: rgba(255, 255, 255, 0.88);
@@ -247,6 +268,7 @@ body {
 /* Nav link underline */
 .nav-link-pill {
   position: relative;
+  cursor: pointer;
 }
 
 .nav-link-pill::after {

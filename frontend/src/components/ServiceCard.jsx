@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
-
-const fallbackImage =
-  'https://images.unsplash.com/photo-1560067174-89455598d5ac?auto=format&fit=crop&w=1200&q=80';
+import { getThematicExperienceImage } from '../lib/experiencePhotos';
 
 function formatType(type) {
   if (!type) return 'Experience';
@@ -9,7 +7,7 @@ function formatType(type) {
 }
 
 export default function ServiceCard({ service }) {
-  const image = service.media?.[0]?.url || fallbackImage;
+  const image = service.media?.[0]?.url || getThematicExperienceImage(service.type);
 
   return (
     <article className="nh-shine-wrap card-rise group flex h-full flex-col overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-cream)]/80 shadow-sm">

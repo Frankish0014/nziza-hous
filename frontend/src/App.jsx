@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
@@ -14,6 +15,7 @@ import AuthPage from './pages/AuthPage';
 function App() {
   return (
     <div className="relative min-h-screen text-[var(--nh-ink)]">
+      <ScrollToTop />
       <div className="nh-grain" aria-hidden />
       <Navbar />
       <Routes>

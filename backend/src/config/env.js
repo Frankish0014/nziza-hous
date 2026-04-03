@@ -17,7 +17,8 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
-  fromEmail: process.env.FROM_EMAIL || 'no-reply@nzizahouse.com',
+  /** Sender address. With Gmail SMTP, use the same mailbox as SMTP_USER (or a verified Workspace alias). */
+  fromEmail: process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@nzizahouse.com',
   adminNotificationEmail: process.env.ADMIN_NOTIFICATION_EMAIL || 'bookings@nzizahouse.com',
   /** Base URL of this API (no trailing slash), e.g. https://api.example.com — used for upload URLs behind proxies */
   publicBaseUrl: process.env.PUBLIC_BASE_URL || '',

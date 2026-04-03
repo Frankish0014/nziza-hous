@@ -60,7 +60,7 @@ export default function AuthPage() {
             {mode === 'login' ? 'Sign in to continue your booking journey.' : 'Join as a guest — quick, secure, minimal fields.'}
           </p>
 
-          <form onSubmit={submit} className="mt-8 space-y-4">
+          <form onSubmit={submit} className="relative z-0 mt-8 space-y-4">
             {mode === 'register' && (
               <div>
                 <label htmlFor="auth-name" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--nh-ink-muted)]">
@@ -109,30 +109,39 @@ export default function AuthPage() {
             </button>
           </form>
 
-          <button
-            type="button"
-            onClick={() => {
-              setMode((m) => (m === 'login' ? 'register' : 'login'));
-              setMessage('');
-            }}
-            className="mt-6 text-left text-sm text-[var(--nh-ink-muted)] transition hover:text-[var(--nh-accent)]"
-          >
-            {mode === 'login' ? (
-              <>
-                New to Nziza House?{' '}
-                <span className="font-semibold text-[var(--nh-accent)]">Create an account</span>
-              </>
-            ) : (
-              <>
-                Already registered?{' '}
-                <span className="font-semibold text-[var(--nh-accent)]">Sign in instead</span>
-              </>
-            )}
-          </button>
+          <div className="relative z-[2] mt-2">
+            <button
+              type="button"
+              onClick={() => {
+                setMode((m) => (m === 'login' ? 'register' : 'login'));
+                setMessage('');
+              }}
+              className="group w-full cursor-pointer rounded-2xl border border-transparent px-3 py-3.5 text-left text-sm text-[var(--nh-ink-muted)] transition hover:border-[var(--nh-border)] hover:bg-white/70 hover:text-[var(--nh-ink)]"
+            >
+              {mode === 'login' ? (
+                <span className="block">
+                  <span className="text-[var(--nh-ink-muted)] group-hover:text-[var(--nh-ink)]">New to Nziza House? </span>
+                  <span className="font-semibold text-[var(--nh-accent)] underline decoration-transparent underline-offset-[3px] transition group-hover:decoration-[var(--nh-accent)]">
+                    Create an account
+                  </span>
+                </span>
+              ) : (
+                <span className="block">
+                  <span className="text-[var(--nh-ink-muted)] group-hover:text-[var(--nh-ink)]">Already registered? </span>
+                  <span className="font-semibold text-[var(--nh-accent)] underline decoration-transparent underline-offset-[3px] transition group-hover:decoration-[var(--nh-accent)]">
+                    Sign in instead
+                  </span>
+                </span>
+              )}
+            </button>
 
-          <Link to="/" className="mt-8 text-sm font-semibold text-[var(--nh-ink-muted)] hover:text-[var(--nh-ink)]">
-            ← Back to home
-          </Link>
+            <Link
+              to="/"
+              className="mt-4 inline-flex cursor-pointer items-center gap-1 rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--nh-ink-muted)] transition hover:bg-white/70 hover:text-[var(--nh-ink)]"
+            >
+              ← Back to home
+            </Link>
+          </div>
 
           {message && (
             <p className="mt-4 rounded-2xl border border-red-200/90 bg-red-50/90 px-4 py-3 text-sm text-red-900" role="alert">

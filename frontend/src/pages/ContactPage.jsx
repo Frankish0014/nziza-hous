@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ScrollReveal';
+import ContactChannels from '../components/ContactChannels';
 import { createMessage } from '../services/platformService';
 
 export default function ContactPage() {
@@ -53,6 +54,7 @@ export default function ContactPage() {
               </span>
             </li>
           </ul>
+          <ContactChannels variant="light" />
         </ScrollReveal>
 
         <ScrollReveal delay={90}>

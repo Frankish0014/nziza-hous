@@ -3,11 +3,14 @@ import { env } from '../config/env.js';
 
 const hasSmtpConfig = Boolean(env.smtp.host && env.smtp.user && env.smtp.pass);
 
+const isGmail = env.smtp.host === 'smtp.gmail.com';
+
 const transporter = hasSmtpConfig
   ? nodemailer.createTransport({
       host: env.smtp.host,
       port: env.smtp.port,
       secure: env.smtp.port === 465,
+      ...(isGmail && env.smtp.port === 587 ? { requireTLS: true } : {}),
       auth: {
         user: env.smtp.user,
         pass: env.smtp.pass,

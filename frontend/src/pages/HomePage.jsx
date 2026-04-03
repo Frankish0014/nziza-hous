@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { EXPERIENCE_IMAGE } from '../lib/experiencePhotos';
 import ScrollReveal from '../components/ScrollReveal';
 import heroBackground from '../images/nziza_background.jpeg';
 
@@ -56,6 +57,7 @@ const experiences = [
     cta: 'Book training',
     href: '/booking',
     icon: icons.gym,
+    image: EXPERIENCE_IMAGE.gym,
     accent: 'from-amber-500/25 to-orange-600/10',
     ring: 'ring-amber-500/30',
   },
@@ -67,6 +69,7 @@ const experiences = [
     cta: 'Reserve a stay',
     href: '/booking',
     icon: icons.home,
+    image: EXPERIENCE_IMAGE.apartment,
     accent: 'from-emerald-500/20 to-teal-600/10',
     ring: 'ring-emerald-500/25',
   },
@@ -78,6 +81,7 @@ const experiences = [
     cta: 'Plan a visit',
     href: '/services',
     icon: icons.coffee,
+    image: EXPERIENCE_IMAGE.coffee,
     accent: 'from-orange-400/25 to-amber-800/10',
     ring: 'ring-orange-400/35',
   },
@@ -89,6 +93,7 @@ const experiences = [
     cta: 'Schedule sauna',
     href: '/booking',
     icon: icons.sauna,
+    image: EXPERIENCE_IMAGE.sauna,
     accent: 'from-rose-400/20 to-red-900/15',
     ring: 'ring-rose-400/30',
   },
@@ -100,6 +105,7 @@ const experiences = [
     cta: 'Book massage',
     href: '/booking',
     icon: icons.massage,
+    image: EXPERIENCE_IMAGE.massage,
     accent: 'from-violet-400/20 to-indigo-900/10',
     ring: 'ring-violet-400/30',
   },
@@ -111,6 +117,7 @@ const experiences = [
     cta: 'Lodge experience',
     href: '/booking',
     icon: icons.lodge,
+    image: EXPERIENCE_IMAGE.lodge,
     accent: 'from-sky-400/15 to-slate-800/20',
     ring: 'ring-sky-500/25',
   },
@@ -242,6 +249,17 @@ export default function HomePage() {
                   className={`pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br ${item.accent} opacity-70 blur-2xl transition duration-500 group-hover:opacity-100`}
                   aria-hidden
                 />
+                <div className="relative -mx-6 -mt-6 mb-5 aspect-[16/10] overflow-hidden rounded-t-3xl border-b border-[var(--nh-border)]">
+                  <img
+                    src={item.image}
+                    alt={`${item.title} — Nziza House`}
+                    width={800}
+                    height={520}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
                 <div className="relative flex items-start justify-between gap-4">
                   <div className="rounded-2xl border border-[var(--nh-border)] bg-white/80 p-3 text-[var(--nh-accent)] shadow-sm">
                     {item.icon}
