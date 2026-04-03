@@ -17,6 +17,8 @@ function printConnectionHelp() {
     Create a project → copy the connection string → in backend/.env add:
     DATABASE_URL=postgresql://USER:PASSWORD@ep-....neon.tech/neondb?sslmode=require
     (Comment out or remove conflicting DB_HOST / DB_NAME lines if the URL includes them.)
+    If you see ETIMEDOUT on port 5432: try the host's pooled connection string, or check
+    VPN/firewall allowing outbound PostgreSQL; local Postgres avoids that.
 
   • Windows installer: https://www.postgresql.org/download/windows/
     Create database nziza_house → set DB_USER / DB_PASSWORD in backend/.env

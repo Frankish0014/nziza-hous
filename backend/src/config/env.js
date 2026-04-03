@@ -1,6 +1,13 @@
+import dns from 'node:dns';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
 
-dotenv.config();
+/** Prefer IPv4 first — avoids long hangs when IPv6 routes to Postgres are blackholed (common on some networks). */
+dns.setDefaultResultOrder('ipv4first');
+
+const backendRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+dotenv.config({ path: path.join(backendRoot, '.env') });
 
 const parseOrigins = (raw) => {
   if (!raw || raw === '*') return true;
