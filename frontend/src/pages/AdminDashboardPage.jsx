@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { asArray } from '../lib/asArray';
 import {
   addMedia,
   createService,
@@ -13,9 +14,15 @@ import {
 } from '../services/platformService';
 
 const initialService = { type: 'gym', name: '', description: '', price: '', currency: 'USD' };
+const initialAnalytics = { bookings: 0, services: 0, users: 0 };
+
+function normalizeAnalytics(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { ...initialAnalytics };
+  return { ...initialAnalytics, ...raw };
+}
 
 export default function AdminDashboardPage() {
-  const [analytics, setAnalytics] = useState({ bookings: 0, services: 0, users: 0 });
+  const [analytics, setAnalytics] = useState(initialAnalytics);
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
   const [users, setUsers] = useState([]);
@@ -24,12 +31,26 @@ export default function AdminDashboardPage() {
   const [mediaForm, setMediaForm] = useState({ serviceId: '', altText: '', file: null });
 
   const load = useCallback(async () => {
-    const [a, b, s, u, m] = await Promise.all([getAnalytics(), getBookings(), getServices(), getUsers(), getMessages()]);
-    setAnalytics(a);
-    setBookings(b);
-    setServices(s);
-    setUsers(u);
-    setMessages(m);
+    try {
+      const [a, b, s, u, m] = await Promise.all([
+        getAnalytics(),
+        getBookings(),
+        getServices(),
+        getUsers(),
+        getMessages(),
+      ]);
+      setAnalytics(normalizeAnalytics(a));
+      setBookings(asArray(b));
+      setServices(asArray(s));
+      setUsers(asArray(u));
+      setMessages(asArray(m));
+    } catch {
+      setAnalytics(initialAnalytics);
+      setBookings([]);
+      setServices([]);
+      setUsers([]);
+      setMessages([]);
+    }
   }, []);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import {
   uploadPaymentProof,
 } from '../services/platformService';
 import ScrollReveal from '../components/ScrollReveal';
+import { asArray } from '../lib/asArray';
 
 const steps = [
   { n: '1', label: 'Select service' },
@@ -42,7 +43,7 @@ export default function BookingPage() {
     setServicesError('');
     try {
       const serviceData = await getServices();
-      setServices(Array.isArray(serviceData) ? serviceData : []);
+      setServices(asArray(serviceData));
     } catch {
       setServices([]);
       setServicesError(
@@ -62,7 +63,7 @@ export default function BookingPage() {
     setHistoryLoading(true);
     try {
       const bookingData = await getBookings(email);
-      setHistory(bookingData);
+      setHistory(asArray(bookingData));
     } finally {
       setHistoryLoading(false);
     }

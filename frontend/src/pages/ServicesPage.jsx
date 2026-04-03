@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import ServiceCard from '../components/ServiceCard';
 import ScrollReveal from '../components/ScrollReveal';
+import { asArray } from '../lib/asArray';
 import { getServices } from '../services/platformService';
 
 const venueFilters = [
@@ -33,7 +34,8 @@ export default function ServicesPage() {
     const run = async () => {
       setLoadError('');
       try {
-        setServices(await getServices());
+        const list = await getServices();
+        setServices(asArray(list));
       } catch {
         setServices([]);
         setLoadError(loadServicesErrorMsg);
@@ -45,7 +47,7 @@ export default function ServicesPage() {
   }, []);
 
   const filtered = useMemo(
-    () => services.filter((s) => matchesFilter(s, activeFilter)),
+    () => asArray(services).filter((s) => matchesFilter(s, activeFilter)),
     [services, activeFilter],
   );
 
