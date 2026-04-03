@@ -2,14 +2,12 @@ import axios from 'axios';
 
 function resolveApiBase() {
   let raw = (import.meta.env.VITE_API_URL || '').trim();
-  if (import.meta.env.PROD && raw && /localhost|127\.0\.0\.1/i.test(raw)) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      '[nziza-house] VITE_API_URL must not use localhost in production — that is each visitor’s own PC. ' +
-        'Set a public API URL on Netlify and redeploy, or use the /api proxy in netlify.toml.',
-    );
+  const ignoredLocalhost =
+    import.meta.env.PROD && raw && /localhost|127\.0\.0\.1/i.test(raw);
+  if (ignoredLocalhost) {
     raw = '';
   }
+
   if (raw) {
     const trimmed = raw.replace(/\/$/, '');
     if (trimmed.endsWith('/api')) return trimmed;
@@ -22,14 +20,21 @@ function resolveApiBase() {
   }
 
   /**
-   * Production build without VITE_API_URL: same-origin /api.
-   * Point Netlify at your hosted API — either set VITE_API_URL (rebuild) or add a proxy in netlify.toml.
+   * Production: same-origin /api unless VITE_API_URL was set to a real URL at build time.
    */
-  if (typeof console !== 'undefined' && console.info) {
-    console.info(
-      '[nziza-house] Using API base /api. On Netlify, set VITE_API_URL to your public API ' +
-        '(e.g. https://api.example.com/api) and redeploy, or proxy /api/* in netlify.toml.',
-    );
+  if (typeof console !== 'undefined') {
+    if (ignoredLocalhost) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[nziza-house] Netlify had VITE_API_URL set to localhost — that points at each visitor’s own PC, so it was ignored. ' +
+          'Using /api on this site instead. Fix: (1) Site settings → Environment: set VITE_API_URL to your hosted API ' +
+          '(e.g. https://your-app.onrender.com/api) and redeploy, or (2) remove that var and uncomment the /api proxy in netlify.toml.',
+      );
+    } else if (import.meta.env.MODE === 'production') {
+      console.debug(
+        '[nziza-house] No VITE_API_URL in build — using /api. Set VITE_API_URL on Netlify and rebuild, or proxy /api in netlify.toml (see repo netlify.toml).',
+      );
+    }
   }
   return '/api';
 }
