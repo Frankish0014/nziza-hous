@@ -28,7 +28,7 @@ function resolveApiBase() {
       console.warn(
         '[nziza-house] Netlify had VITE_API_URL set to localhost — that points at each visitor’s own PC, so it was ignored. ' +
           'Using /api on this site instead. Fix: (1) Site settings → Environment: set VITE_API_URL to your hosted API ' +
-          '(e.g. https://your-app.onrender.com/api) and redeploy, or (2) remove that var and uncomment the /api proxy in netlify.toml.',
+          '(e.g. https://api.yourdomain.com/api or your PaaS URL) and redeploy, or (2) remove that var and uncomment the /api proxy in netlify.toml.',
       );
     } else if (import.meta.env.MODE === 'production') {
       console.debug(

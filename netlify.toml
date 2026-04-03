@@ -4,7 +4,7 @@
 # Add this block BEFORE the SPA rule, replace the URL, commit, and redeploy.
 # [[redirects]]
 #   from = "/api/*"
-#   to = "https://YOUR-BACKEND-HOST.example.com/api/:splat"
+#   to = "https://YOUR-API.public.host/api/:splat"
 #   status = 200
 #   force = true
 
