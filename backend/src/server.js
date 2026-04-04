@@ -7,8 +7,22 @@ import { initDb } from './data/initDb.js';
 
 const start = async () => {
   try {
-    await waitForDatabase();
-    await initDb();
+    if (env.skipDatabaseBootstrap) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[api] CATALOG_SOURCE=json — catalog is read from data/catalog.fallback.json. ' +
+          'Bookings, auth, and admin require PostgreSQL; unset CATALOG_SOURCE for full mode.',
+      );
+      if (env.db.databaseUrl) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[api] A Postgres URL is set but initDb was skipped — remove CATALOG_SOURCE=json to run migrations.',
+        );
+      }
+    } else {
+      await waitForDatabase();
+      await initDb();
+    }
     const server = http.createServer(app);
     server.listen(env.port, () => {
       // eslint-disable-next-line no-console

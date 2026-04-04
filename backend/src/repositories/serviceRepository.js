@@ -1,6 +1,17 @@
 import { query } from '../config/db.js';
+import { env } from '../config/env.js';
+import { loadFallbackCatalog } from '../data/fallbackCatalog.js';
+
+const readOnlyCatalogError = () => {
+  const err = new Error(
+    'Service catalog is read-only in CATALOG_SOURCE=json mode — deploy PostgreSQL for writes.',
+  );
+  err.status = 501;
+  return err;
+};
 
 export const createService = async (payload) => {
+  if (env.skipDatabaseBootstrap) throw readOnlyCatalogError();
   const { type, name, description, price, currency, isActive } = payload;
   const { rows } = await query(
     `INSERT INTO services (type, name, description, price, currency, is_active)
@@ -12,6 +23,7 @@ export const createService = async (payload) => {
 };
 
 export const updateService = async (id, payload) => {
+  if (env.skipDatabaseBootstrap) throw readOnlyCatalogError();
   const { type, name, description, price, currency, isActive } = payload;
   const { rows } = await query(
     `UPDATE services
@@ -29,10 +41,14 @@ export const updateService = async (id, payload) => {
 };
 
 export const deleteService = async (id) => {
+  if (env.skipDatabaseBootstrap) throw readOnlyCatalogError();
   await query('DELETE FROM services WHERE id = $1', [id]);
 };
 
 export const listServices = async () => {
+  if (env.skipDatabaseBootstrap) {
+    return loadFallbackCatalog();
+  }
   const { rows } = await query(
     `SELECT s.*, COALESCE(json_agg(m.*) FILTER (WHERE m.id IS NOT NULL), '[]') AS media
      FROM services s
@@ -45,6 +61,10 @@ export const listServices = async () => {
 };
 
 export const getServiceById = async (id) => {
+  if (env.skipDatabaseBootstrap) {
+    const catalog = await loadFallbackCatalog();
+    return catalog.find((s) => Number(s.id) === Number(id)) || null;
+  }
   const { rows } = await query(
     `SELECT s.*, COALESCE(json_agg(m.*) FILTER (WHERE m.id IS NOT NULL), '[]') AS media
      FROM services s

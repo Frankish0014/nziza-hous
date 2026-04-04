@@ -2,12 +2,19 @@ import dns from 'node:dns';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
+import { pickDatabaseUrl } from './pickDatabaseUrl.js';
 
 /** Prefer IPv4 first — avoids long hangs when IPv6 routes to Postgres are blackholed (common on some networks). */
 dns.setDefaultResultOrder('ipv4first');
 
 const backendRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 dotenv.config({ path: path.join(backendRoot, '.env') });
+
+const nodeEnv = process.env.NODE_ENV || 'development';
+const databaseConnectionUrl = pickDatabaseUrl(nodeEnv);
+/** When "json", skip Postgres bootstrap and serve GET /services from data/catalog.fallback.json (demo / partial deploy). */
+const skipDatabaseBootstrap =
+  String(process.env.CATALOG_SOURCE || '').toLowerCase() === 'json';
 
 const parseOrigins = (raw) => {
   if (!raw || raw === '*') return true;
@@ -21,7 +28,8 @@ const parseOrigins = (raw) => {
 
 export const env = {
   port: Number(process.env.PORT) || 4000,
-  nodeEnv: process.env.NODE_ENV || 'development',
+  nodeEnv,
+  skipDatabaseBootstrap,
   jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   /** Sender address. With Gmail SMTP, use the same mailbox as SMTP_USER (or a verified Workspace alias). */
@@ -42,8 +50,11 @@ export const env = {
     pass: process.env.SMTP_PASS || '',
   },
   db: {
-    /** Full URL (Neon, Supabase, Railway). When set, host/user/password/database are ignored. */
-    databaseUrl: process.env.DATABASE_URL || '',
+    /**
+     * Resolved URL — see config/pickDatabaseUrl.js (POSTGRES_URL, DATABASE_URL, LOCAL_POSTGRES_URL).
+     * Vercel Postgres sets POSTGRES_URL; works with the existing `pg` pool (no @vercel/postgres client required).
+     */
+    databaseUrl: databaseConnectionUrl,
     // Prefer 127.0.0.1 on Windows dev: avoids IPv6 (::1) when Postgres is Docker-mapped
     host: process.env.DB_HOST || '127.0.0.1',
     port: Number(process.env.DB_PORT) || 5432,
@@ -59,7 +70,7 @@ export const env = {
   seedAdminName: process.env.SEED_ADMIN_NAME || 'Platform Admin',
   /** Dev: retry connecting to Postgres this many times (waits for DB to start). Prod: 1 unless overridden. */
   dbConnectRetries:
-    process.env.NODE_ENV === 'production'
+    nodeEnv === 'production'
       ? Math.max(1, Number(process.env.DB_CONNECT_RETRIES || 1))
       : Math.max(1, Number(process.env.DB_CONNECT_RETRIES || 30)),
   dbConnectDelayMs: Math.max(500, Number(process.env.DB_CONNECT_DELAY_MS || 2000)),

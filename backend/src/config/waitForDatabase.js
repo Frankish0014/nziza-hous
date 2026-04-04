@@ -3,7 +3,7 @@ import { query } from './db.js';
 
 function printConnectionHelp() {
   const target = env.db.databaseUrl?.trim()
-    ? 'DATABASE_URL (cloud)'
+    ? 'configured Postgres URL (POSTGRES_URL / DATABASE_URL / LOCAL_POSTGRES_URL)'
     : `${env.db.host}:${env.db.port} / database "${env.db.database}"`;
 
   // eslint-disable-next-line no-console
@@ -13,17 +13,16 @@ function printConnectionHelp() {
 
   Fix one of these:
 
-  • Cloud (no local install): https://neon.tech
-    Create a project → copy the connection string → in backend/.env add:
-    DATABASE_URL=postgresql://USER:PASSWORD@ep-....neon.tech/neondb?sslmode=require
-    (Comment out or remove conflicting DB_HOST / DB_NAME lines if the URL includes them.)
-    If you see ETIMEDOUT on port 5432: try the host's pooled connection string, or check
-    VPN/firewall allowing outbound PostgreSQL; local Postgres avoids that.
+  • Hosting (Vercel Postgres, Neon, etc.): set POSTGRES_URL or DATABASE_URL — same string works with \`pg\`.
+  • Local dev: LOCAL_POSTGRES_URL or DATABASE_URL in backend/.env (see config/pickDatabaseUrl.js for order).
 
   • Windows installer: https://www.postgresql.org/download/windows/
     Create database nziza_house → set DB_USER / DB_PASSWORD in backend/.env
 
   • Docker (if installed): from repo root run  npm run db:up
+
+  Catalog-only demo (no DB): CATALOG_SOURCE=json — serves GET /services from data/catalog.fallback.json
+  (bookings/auth still need Postgres).
 
   Test:  cd backend && npm run db:check
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -49,7 +48,9 @@ export async function waitForDatabase() {
       return;
     } catch (err) {
       lastErr = err;
-      const hostLabel = env.db.databaseUrl?.trim() ? 'DATABASE_URL' : `${env.db.host}:${env.db.port}`;
+      const hostLabel = env.db.databaseUrl?.trim()
+        ? 'Postgres URL'
+        : `${env.db.host}:${env.db.port}`;
       // eslint-disable-next-line no-console
       console.warn(
         `[db] PostgreSQL not reachable (${hostLabel}) — attempt ${attempt}/${max}${

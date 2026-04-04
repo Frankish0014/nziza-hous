@@ -33,7 +33,12 @@ function loadBackendEnv() {
  * True when backend/.env already points at Postgres (Docker compose not needed).
  */
 function backendEnvLooksConfigured(vars) {
-  const url = vars.DATABASE_URL?.trim();
+  if (String(vars.CATALOG_SOURCE || '').toLowerCase() === 'json') {
+    return true;
+  }
+  const url = [vars.POSTGRES_URL, vars.LOCAL_POSTGRES_URL, vars.DATABASE_URL]
+    .map((x) => (typeof x === 'string' ? x.trim() : ''))
+    .find(Boolean);
   if (url && /^postgres(ql)?:\/\//i.test(url) && url.length > 18) {
     return true;
   }
