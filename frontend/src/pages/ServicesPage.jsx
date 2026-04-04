@@ -2,17 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import ServiceCard from '../components/ServiceCard';
 import ScrollReveal from '../components/ScrollReveal';
 import { asArray } from '../lib/asArray';
+import { SERVICES_PAGE } from '../lib/servicesPageCopy';
 import { getServices } from '../services/platformService';
 
-const venueFilters = [
-  { id: 'all', label: 'All' },
-  { id: 'gym', label: 'Gym' },
-  { id: 'apartment', label: 'Apartments' },
-  { id: 'coffee', label: 'Coffee' },
-  { id: 'sauna', label: 'Sauna' },
-  { id: 'massage', label: 'Massage' },
-  { id: 'lodge', label: 'Lodge' },
-];
+const venueFilters = SERVICES_PAGE.filterLabels;
 
 function matchesFilter(service, filterId) {
   if (filterId === 'all') return true;
@@ -21,8 +14,9 @@ function matchesFilter(service, filterId) {
   return t.includes(filterId);
 }
 
-const loadServicesErrorMsg =
-  'Could not load services. The API is offline or PostgreSQL is not running. Fix: (1) Start Postgres locally, or add DATABASE_URL from neon.tech to backend/.env. (2) From repo root run npm run db:check — then npm run dev:all. (3) frontend/.env: VITE_API_URL=http://localhost:4000/api';
+const loadServicesErrorMsg = import.meta.env.PROD
+  ? 'We could not load experiences right now. Please try again shortly.'
+  : 'Could not load services. The API is offline or PostgreSQL is not running. Fix: (1) Start Postgres locally, or add DATABASE_URL from neon.tech to backend/.env. (2) From repo root run npm run db:check — then npm run dev:all. (3) frontend/.env: VITE_API_URL=http://localhost:4000/api';
 
 export default function ServicesPage() {
   const [services, setServices] = useState([]);
@@ -55,14 +49,13 @@ export default function ServicesPage() {
     <main className="mx-auto max-w-7xl px-4 py-16 md:py-24">
       <ScrollReveal>
         <div className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-accent)]">The collection</p>
-          <h1 className="font-display mt-4 text-4xl font-medium tracking-tight text-[var(--nh-ink)] md:text-6xl">
-            Experiences shaped for real life
-          </h1>
-          <p className="mt-5 text-lg text-[var(--nh-ink-muted)]">
-            Filter by venue, explore details, then book the rhythm that fits your week — training, stay, coffee, heat, touch,
-            or a full lodge escape.
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-accent)]">
+            {SERVICES_PAGE.eyebrow}
           </p>
+          <h1 className="font-display mt-4 text-4xl font-medium tracking-tight text-[var(--nh-ink)] md:text-6xl">
+            {SERVICES_PAGE.title}
+          </h1>
+          <p className="mt-5 text-lg text-[var(--nh-ink-muted)]">{SERVICES_PAGE.intro}</p>
         </div>
       </ScrollReveal>
 
@@ -113,8 +106,8 @@ export default function ServicesPage() {
         </section>
       ) : (
         <div className="glass-panel mt-12 rounded-3xl p-10 text-center">
-          <p className="font-display text-xl text-[var(--nh-ink)]">No experiences in this category yet</p>
-          <p className="mt-2 text-[var(--nh-ink-muted)]">Try another filter or check back after the team publishes new services.</p>
+          <p className="font-display text-xl text-[var(--nh-ink)]">{SERVICES_PAGE.emptyTitle}</p>
+          <p className="mt-2 text-[var(--nh-ink-muted)]">{SERVICES_PAGE.emptySubtitle}</p>
         </div>
       )}
     </main>
