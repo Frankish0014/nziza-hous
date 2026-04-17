@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "type": "gym",
+    "name": "Movement floor",
+    "description": "Strength and conditioning space — train on your schedule.",
+    "price": "45.00",
+    "currency": "USD",
+    "is_active": true,
+    "created_at": "2026-01-01T12:00:00.000Z",
+    "media": []
+  },
+  {
+    "id": 2,
+    "type": "apartments",
+    "name": "Stay — apartments",
+    "description": "Calm, furnished apartments for short visits and longer rhythms.",
+    "price": "120.00",
+    "currency": "USD",
+    "is_active": true,
+    "created_at": "2026-01-01T12:00:00.000Z",
+    "media": []
+  },
+  {
+    "id": 3,
+    "type": "coffee_shop",
+    "name": "Coffee bar",
+    "description": "Morning espresso, quiet afternoons, good light.",
+    "price": null,
+    "currency": "USD",
+    "is_active": true,
+    "created_at": "2026-01-01T12:00:00.000Z",
+    "media": []
+  },
+  {
+    "id": 4,
+    "type": "sauna",
+    "name": "Sauna & heat",
+    "description": "Slow down with dry heat sessions by appointment.",
+    "price": "35.00",
+    "currency": "USD",
+    "is_active": true,
+    "created_at": "2026-01-01T12:00:00.000Z",
+    "media": []
+  },
+  {
+    "id": 5,
+    "type": "massage",
+    "name": "Massage",
+    "description": "Recovery and deep touch — book a therapist-led slot.",
+    "price": "85.00",
+    "currency": "USD",
+    "is_active": true,
+    "created_at": "2026-01-01T12:00:00.000Z",
+    "media": []
+  },
+  {
+    "id": 6,
+    "type": "lodge",
+    "name": "Lodge escape",
+    "description": "Full lodge experience — stay, eat, and unwind in one rhythm.",
+    "price": "280.00",
+    "currency": "USD",
+    "is_active": true,
+    "created_at": "2026-01-01T12:00:00.000Z",
+    "media": []
+  }
+]

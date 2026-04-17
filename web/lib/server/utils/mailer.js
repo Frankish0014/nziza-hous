@@ -53,7 +53,6 @@ const transporter = hasSmtpConfig
 
 export const sendMail = async ({ to, subject, text, html, replyTo }) => {
   if (!transporter) {
-    // eslint-disable-next-line no-console
     console.log(`[MAIL-DRY-RUN] to=${to} subject="${subject}"`);
     return { ok: false, skipped: true };
   }
@@ -69,7 +68,6 @@ export const sendMail = async ({ to, subject, text, html, replyTo }) => {
     });
     return { ok: true };
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error('[mail] send failed:', e?.message || e);
     return {
       ok: false,

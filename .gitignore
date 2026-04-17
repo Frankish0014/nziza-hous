@@ -1,0 +1,46 @@
+# Cursor IDE (local only)
+.cursor/
+
+# Dependencies (npm workspaces hoist here)
+node_modules/
+
+# Secrets & local env (keep *.example tracked)
+.env
+.env.local
+.env.*.local
+!.env.example
+!**/.env.example
+
+# Next.js / frontend build
+.next/
+out/
+dist/
+dist-ssr/
+build/
+
+# Backend runtime uploads
+backend/uploads/
+uploads/
+
+# Logs & debug
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Tooling / OS
+.DS_Store
+Thumbs.db
+.idea/
+*.tsbuildinfo
+.vercel
+
+# Optional: large local media (matches frontend rule)
+frontend/public/videos/*.mp4
+frontend/public/videos/*.webm

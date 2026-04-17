@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "type": "gym",
+    "name": "Movement floor (demo)",
+    "description": "Static catalog sample when CATALOG_SOURCE=json — deploy PostgreSQL for real data and bookings.",
+    "price": "45.00",
+    "currency": "USD",
+    "is_active": true,
+    "created_at": "2026-01-01T12:00:00.000Z",
+    "media": []
+  },
+  {
+    "id": 2,
+    "type": "coffee_shop",
+    "name": "Coffee bar (demo)",
+    "description": "Replace this file or switch CATALOG_SOURCE=postgres with DATABASE_URL / POSTGRES_URL.",
+    "price": null,
+    "currency": "USD",
+    "is_active": true,
+    "created_at": "2026-01-01T12:00:00.000Z",
+    "media": []
+  }
+]

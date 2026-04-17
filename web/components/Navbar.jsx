@@ -1,0 +1,216 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import BrandLogo from '@/components/BrandLogo';
+import useAuth from '@/hooks/useAuth';
+
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/services', label: 'Experiences' },
+  { href: '/booking', label: 'Book' },
+  { href: '/contact', label: 'Contact' },
+];
+
+function NavItem({ href, label, onNavigate, mobile }) {
+  const pathname = usePathname();
+  const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
+  if (mobile) {
+    return (
+      <Link
+        href={href}
+        onClick={onNavigate}
+        className={`rounded-2xl px-4 py-3.5 text-sm font-semibold ${
+          isActive ? 'bg-[var(--nh-accent-soft)] text-[var(--nh-accent)]' : 'text-[var(--nh-ink)]'
+        }`}
+      >
+        {label}
+      </Link>
+    );
+  }
+  return (
+    <Link
+      href={href}
+      className={`nav-link-pill rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] ${
+        isActive
+          ? 'text-[var(--nh-accent)] is-active'
+          : 'text-[var(--nh-ink-muted)] hover:text-[var(--nh-ink)]'
+      }`}
+    >
+      {label}
+    </Link>
+  );
+}
+
+export default function Navbar() {
+  const { isAuthenticated, isAdmin, logout } = useAuth();
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
+  const adminActive = pathname.startsWith('/admin');
+
+  return (
+    <header
+      className={`sticky top-0 z-50 transition-[background,box-shadow,border-color] duration-300 ${
+        scrolled
+          ? 'border-[var(--nh-border)] bg-[var(--nh-cream)]/92 shadow-[0_8px_32px_rgba(20,18,16,0.06)] backdrop-blur-xl'
+          : 'border-transparent bg-[var(--nh-cream)]/70 backdrop-blur-md'
+      } border-b`}
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5 md:py-4">
+        <BrandLogo height={100} className="text-[var(--nh-ink)]" onNavigate={() => setMenuOpen(false)} />
+
+        <button
+          type="button"
+          className="relative z-[60] flex h-11 w-11 flex-col items-center justify-center rounded-xl border border-[var(--nh-border)] bg-white/80 text-[var(--nh-ink)] shadow-sm md:hidden"
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          onClick={() => setMenuOpen((p) => !p)}
+        >
+          <span
+            className={`block h-0.5 w-5 rounded-full bg-current transition-transform duration-300 ${
+              menuOpen ? 'translate-y-[3px] rotate-45' : ''
+            }`}
+          />
+          <span
+            className={`mt-1.5 block h-0.5 w-5 rounded-full bg-current transition-opacity duration-300 ${
+              menuOpen ? 'opacity-0' : ''
+            }`}
+          />
+          <span
+            className={`mt-1.5 block h-0.5 w-5 rounded-full bg-current transition-transform duration-300 ${
+              menuOpen ? '-translate-y-[9px] -rotate-45' : ''
+            }`}
+          />
+        </button>
+
+        <nav className="hidden items-center gap-1 md:flex md:gap-2">
+          {links.map(({ href, label }) => (
+            <NavItem key={href} href={href} label={label} />
+          ))}
+          {isAdmin && (
+            <>
+              <Link
+                href="/admin/bookings"
+                className={`nav-link-pill rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] ${
+                  pathname.startsWith('/admin/bookings')
+                    ? 'text-[var(--nh-accent)] is-active'
+                    : 'text-[var(--nh-ink-muted)] hover:text-[var(--nh-ink)]'
+                }`}
+              >
+                Bookings
+              </Link>
+              <Link
+                href="/admin"
+                className={`nav-link-pill rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] ${
+                  adminActive && !pathname.startsWith('/admin/bookings')
+                    ? 'text-[var(--nh-accent)] is-active'
+                    : 'text-[var(--nh-ink-muted)] hover:text-[var(--nh-ink)]'
+                }`}
+              >
+                Admin
+              </Link>
+            </>
+          )}
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={logout}
+              className="ml-2 rounded-full border border-[var(--nh-border)] bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--nh-ink)] transition hover:border-[var(--nh-accent)]/40 hover:text-[var(--nh-accent)]"
+            >
+              Log out
+            </button>
+          ) : (
+            <Link
+              href="/auth"
+              className="btn-primary ml-2 rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.1em]"
+            >
+              Sign in
+            </Link>
+          )}
+        </nav>
+      </div>
+
+      <div
+        className={`fixed inset-0 z-[55] bg-[var(--nh-deep)]/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+          menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        aria-hidden
+        onClick={() => setMenuOpen(false)}
+      />
+
+      <nav
+        className={`fixed inset-x-0 top-0 z-[56] flex max-h-[min(92vh,540px)] flex-col gap-1 overflow-y-auto rounded-b-3xl border-b border-[var(--nh-border)] bg-[var(--nh-cream)] px-4 pb-8 pt-20 shadow-2xl transition-[transform,opacity] duration-300 ease-out md:hidden ${
+          menuOpen ? 'translate-y-0 opacity-100' : '-translate-y-[8px] opacity-0 pointer-events-none'
+        }`}
+      >
+        {links.map(({ href, label }) => (
+          <NavItem key={href} href={href} label={label} onNavigate={() => setMenuOpen(false)} mobile />
+        ))}
+        {isAdmin && (
+          <>
+            <Link
+              href="/admin/bookings"
+              onClick={() => setMenuOpen(false)}
+              className={`rounded-2xl px-4 py-3.5 text-sm font-semibold ${
+                pathname.startsWith('/admin/bookings') ? 'bg-[var(--nh-accent-soft)] text-[var(--nh-accent)]' : 'text-[var(--nh-ink)]'
+              }`}
+            >
+              Bookings
+            </Link>
+            <Link
+              href="/admin"
+              onClick={() => setMenuOpen(false)}
+              className={`rounded-2xl px-4 py-3.5 text-sm font-semibold ${
+                adminActive && !pathname.startsWith('/admin/bookings')
+                  ? 'bg-[var(--nh-accent-soft)] text-[var(--nh-accent)]'
+                  : 'text-[var(--nh-ink)]'
+              }`}
+            >
+              Admin
+            </Link>
+          </>
+        )}
+        <div className="mt-4 flex flex-col gap-2 border-t border-[var(--nh-border)] pt-4">
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={() => {
+                logout();
+                setMenuOpen(false);
+              }}
+              className="rounded-2xl border border-[var(--nh-border)] py-3.5 text-sm font-semibold text-[var(--nh-ink)]"
+            >
+              Log out
+            </button>
+          ) : (
+            <Link
+              href="/auth"
+              onClick={() => setMenuOpen(false)}
+              className="btn-primary rounded-2xl py-3.5 text-center text-sm font-semibold"
+            >
+              Sign in
+            </Link>
+          )}
+        </div>
+      </nav>
+    </header>
+  );
+}

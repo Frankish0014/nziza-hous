@@ -1,5 +1,9 @@
 # Netlify picks this up from the repo root. Build settings may also be set in the Netlify UI.
 
+[build.environment]
+  # Vite 8 + Rolldown expect a current Node; keeps Linux builds consistent with local dev.
+  NODE_VERSION = "22"
+
 # Proxy API requests to your deployed backend (optional alternative to VITE_API_URL at build time).
 # Add this block BEFORE the SPA rule, replace the URL, commit, and redeploy.
 # [[redirects]]

@@ -1,0 +1,89 @@
+import dns from 'node:dns';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
+import { pickDatabaseUrl } from './pickDatabaseUrl.js';
+
+/** Prefer IPv4 first — avoids long hangs when IPv6 routes to Postgres are blackholed (common on some networks). */
+dns.setDefaultResultOrder('ipv4first');
+
+/** Next.js app root (the `web/` folder when deployed). */
+const webRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
+/** Monorepo root (parent of `web/`) — optional `backend/.env` shares SMTP with Express. */
+const repoRoot = path.join(webRoot, '..');
+// Lowest → highest priority (later files override) so `web/.env.local` wins.
+dotenv.config({ path: path.join(repoRoot, '.env'), override: true });
+dotenv.config({ path: path.join(repoRoot, 'backend', '.env'), override: true });
+dotenv.config({ path: path.join(webRoot, '.env'), override: true });
+dotenv.config({ path: path.join(webRoot, '.env.local'), override: true });
+
+const nodeEnv = process.env.NODE_ENV || 'development';
+const databaseConnectionUrl = pickDatabaseUrl(nodeEnv);
+/** When "json", skip Postgres bootstrap and serve GET /services from data/catalog.fallback.json (demo / partial deploy). */
+const skipDatabaseBootstrap =
+  String(process.env.CATALOG_SOURCE || '').toLowerCase() === 'json';
+
+const parseOrigins = (raw) => {
+  if (!raw || raw === '*') return true;
+  const list = raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (list.includes('*')) return true;
+  return list;
+};
+
+export const env = {
+  port: Number(process.env.PORT) || 4000,
+  nodeEnv,
+  skipDatabaseBootstrap,
+  jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  /** Sender address. With Gmail SMTP, use the same mailbox as SMTP_USER (or a verified Workspace alias). */
+  fromEmail: process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@nzizahouse.com',
+  adminNotificationEmail: process.env.ADMIN_NOTIFICATION_EMAIL || 'bookings@nzizahouse.com',
+  /** IANA timezone for “today” and slot cutoffs (e.g. Africa/Kigali). */
+  bookingTimeZone: process.env.BOOKING_TIMEZONE || 'Africa/Kigali',
+  /** Public site origin for admin links in emails (no trailing slash), e.g. https://nzizahouse.com */
+  siteUrl: String(process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, ''),
+  /** Base URL of this API (no trailing slash), e.g. https://api.example.com — used for upload URLs behind proxies */
+  publicBaseUrl: process.env.PUBLIC_BASE_URL || '',
+  trustProxy: process.env.TRUST_PROXY === 'true' || process.env.TRUST_PROXY === '1',
+  /** Comma-separated origins or *. When unset, all origins are allowed (set in production). */
+  corsOrigin:
+    process.env.CORS_ORIGIN !== undefined && String(process.env.CORS_ORIGIN).trim() !== ''
+      ? parseOrigins(process.env.CORS_ORIGIN)
+      : true,
+  smtp: {
+    host: process.env.SMTP_HOST || '',
+    port: Number(process.env.SMTP_PORT) || 587,
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || '',
+  },
+  db: {
+    /**
+     * Resolved URL — see config/pickDatabaseUrl.js (POSTGRES_URL, DATABASE_URL, LOCAL_POSTGRES_URL).
+     * Vercel Postgres sets POSTGRES_URL; works with the existing `pg` pool (no @vercel/postgres client required).
+     */
+    databaseUrl: databaseConnectionUrl,
+    // Prefer 127.0.0.1 on Windows dev: avoids IPv6 (::1) when Postgres is Docker-mapped
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: Number(process.env.DB_PORT) || 5432,
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'postgres',
+    database: process.env.DB_NAME || 'nziza_house',
+    /** Set true if connecting to local discrete vars but server requires SSL (rare). */
+    useSsl: process.env.DB_SSL === 'true' || process.env.DB_SSL === '1',
+  },
+  /** Optional one-time admin seed (development / first deploy). Requires both values. */
+  seedAdminEmail: process.env.SEED_ADMIN_EMAIL || '',
+  seedAdminPassword: process.env.SEED_ADMIN_PASSWORD || '',
+  seedAdminName: process.env.SEED_ADMIN_NAME || 'Platform Admin',
+  /** Dev: retry connecting to Postgres this many times (waits for DB to start). Prod: 1 unless overridden. */
+  dbConnectRetries:
+    nodeEnv === 'production'
+      ? Math.max(1, Number(process.env.DB_CONNECT_RETRIES || 1))
+      : Math.max(1, Number(process.env.DB_CONNECT_RETRIES || 30)),
+  dbConnectDelayMs: Math.max(500, Number(process.env.DB_CONNECT_DELAY_MS || 2000)),
+};
+
