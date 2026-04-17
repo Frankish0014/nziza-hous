@@ -35,6 +35,8 @@ export const env = {
   /** Sender address. With Gmail SMTP, use the same mailbox as SMTP_USER (or a verified Workspace alias). */
   fromEmail: process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@nzizahouse.com',
   adminNotificationEmail: process.env.ADMIN_NOTIFICATION_EMAIL || 'bookings@nzizahouse.com',
+  bookingTimeZone: process.env.BOOKING_TIMEZONE || 'Africa/Kigali',
+  siteUrl: String(process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, ''),
   /** Base URL of this API (no trailing slash), e.g. https://api.example.com — used for upload URLs behind proxies */
   publicBaseUrl: process.env.PUBLIC_BASE_URL || '',
   trustProxy: process.env.TRUST_PROXY === 'true' || process.env.TRUST_PROXY === '1',

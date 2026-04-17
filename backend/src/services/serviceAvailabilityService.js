@@ -1,11 +1,16 @@
 import { TIME_SLOTS } from '../utils/timeSlots.js';
 import * as serviceRepository from '../repositories/serviceRepository.js';
 import * as bookingRepository from '../repositories/bookingRepository.js';
+import {
+  venueCalendarDate,
+  isSlotPastForVenueDate,
+  addCalendarDays,
+} from '../utils/slotRules.js';
+import { env } from '../config/env.js';
 
 const formatISODate = (d) => d.toISOString().slice(0, 10);
 
 const parseISODate = (s) => {
-  // Expect YYYY-MM-DD
   const [y, m, day] = s.split('-').map((x) => Number(x));
   const dt = new Date(Date.UTC(y, m - 1, day));
   return dt;
@@ -21,6 +26,14 @@ const dateRange = (fromISO, toISO) => {
   return out;
 };
 
+function buildDaySlots(date, bookedSet, now, timeZone) {
+  return TIME_SLOTS.map((slot) => ({
+    slot,
+    booked: bookedSet.has(slot),
+    past: isSlotPastForVenueDate(date, slot, now, timeZone),
+  }));
+}
+
 export const getAvailability = async ({ serviceId, from, to }) => {
   const service = await serviceRepository.getServiceById(Number(serviceId));
   if (!service || service.is_active === false) {
@@ -29,9 +42,10 @@ export const getAvailability = async ({ serviceId, from, to }) => {
     throw err;
   }
 
-  const today = new Date();
-  const defaultFrom = formatISODate(today);
-  const defaultTo = formatISODate(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
+  const tz = env.bookingTimeZone;
+  const now = new Date();
+  const defaultFrom = venueCalendarDate(now, tz);
+  const defaultTo = addCalendarDays(defaultFrom, 14);
 
   const fromISO = from || defaultFrom;
   const toISO = to || defaultTo;
@@ -42,19 +56,16 @@ export const getAvailability = async ({ serviceId, from, to }) => {
     dates,
   });
 
-  const data = dates
-    .map((date) => {
-      const booked = bookedMap.get(date) || new Set();
-      const availableSlots = TIME_SLOTS.filter((slot) => !booked.has(slot));
-      return availableSlots.length ? { date, slots: availableSlots } : null;
-    })
-    .filter(Boolean);
+  const data = dates.map((date) => {
+    const booked = bookedMap.get(date) || new Set();
+    return { date, slots: buildDaySlots(date, booked, now, tz) };
+  });
 
   return {
     serviceId: Number(serviceId),
     from: fromISO,
     to: toISO,
+    timezone: tz,
     data,
   };
 };
-

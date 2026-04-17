@@ -213,7 +213,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="relative border-y border-white/10 bg-[var(--nh-deep)]/85 py-3 text-[#c9c0b3] backdrop-blur-md">
+        <div className="relative border-y border-white/[0.09] bg-gradient-to-r from-[rgb(12_11_10/0.96)] via-[rgb(22_32_29/0.94)] to-[rgb(12_11_10/0.96)] py-3 text-[#d2cbc1] shadow-[inset_0_1px_0_rgba(255,250,240,0.05)] backdrop-blur-md">
           <div className="nh-marquee-track gap-12 pr-12">
             {duplicatedMarquee.map((word, i) => (
               <span key={`${word}-${i}`} className="flex items-center gap-12 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.45em]">
@@ -223,6 +223,42 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-4 pt-14 md:pb-8 md:pt-16">
+        <ScrollReveal>
+          <div className="relative overflow-hidden rounded-[2rem] border border-[var(--nh-border)] bg-gradient-to-r from-[var(--nh-deep)] via-[#1f2f2a] to-[var(--nh-sage)] px-6 py-8 text-white shadow-[0_24px_55px_-24px_rgba(20,18,16,0.55)] md:px-10 md:py-10">
+            <div className="pointer-events-none absolute -right-20 -top-16 h-56 w-56 rounded-full bg-[var(--nh-accent)]/30 blur-3xl" aria-hidden />
+            <div className="relative grid gap-6 lg:grid-cols-[1.45fr_0.9fr] lg:items-end">
+              <div>
+                <p className="inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/90">
+                  New at Nziza House
+                </p>
+                <h2 className="font-display mt-4 max-w-3xl text-3xl font-medium tracking-tight md:text-4xl">
+                  Introducing our new Business Center.
+                </h2>
+                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/85 md:text-base">
+                  Bring your meetings, focused work sessions, and business networking to Nziza House. Work in comfort, then
+                  unwind with coffee, wellness, and hospitality experiences in one address.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3 lg:justify-end">
+                <Link
+                  to="/booking"
+                  className="inline-flex items-center rounded-full bg-[var(--nh-accent)] px-6 py-3 text-sm font-semibold text-[var(--nh-deep)] transition hover:bg-[#f4b286]"
+                >
+                  Book your visit
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center rounded-full border border-white/35 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                >
+                  Ask about business packages
+                </Link>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-20 md:py-28">

@@ -77,6 +77,17 @@ export const listBookedSlotsByServiceAndDates = async ({ serviceId, dates }) => 
   return map; // Map<YYYY-MM-DD, Set<time_slot>>
 };
 
+export const hasActiveBookingForSlot = async ({ serviceId, bookingDate, timeSlot }) => {
+  const { rows } = await query(
+    `SELECT 1 FROM bookings
+     WHERE service_id = $1 AND booking_date = $2::date AND time_slot = $3
+       AND status IN ('pending', 'confirmed')
+     LIMIT 1`,
+    [serviceId, bookingDate, timeSlot],
+  );
+  return rows.length > 0;
+};
+
 export const updateBookingStatus = async (id, status) => {
   const { rows } = await query(
     `UPDATE bookings b

@@ -5,11 +5,11 @@ export function experiencePhoto(id, w = 800, h = 520) {
 }
 
 export const EXPERIENCE_IMAGE = {
-  gym: experiencePhoto('photo-1534438327276-14e5300c3a48'),
+  gym: experiencePhoto('photo-1649888216899-047093431441'),
   apartment: experiencePhoto('photo-1522708323590-d24dbb6b0267'),
   coffee: experiencePhoto('photo-1554118811-1e0d58224f24'),
   sauna: experiencePhoto('photo-1540555700478-4be289fbecef'),
-  massage: experiencePhoto('photo-1519823551278-64ac92734fb1'),
+  massage: experiencePhoto('photo-1675159364445-80fa5e54314a'),
   lodge: experiencePhoto('photo-1478131143081-80f7f84ca84d'),
 };
 

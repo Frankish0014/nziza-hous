@@ -5,7 +5,10 @@ export const createBookingSchema = Joi.object({
   body: Joi.object({
     serviceId: Joi.number().integer().required(),
     fullName: Joi.string().min(2).max(160).required(),
-    email: Joi.string().email().required(),
+    email: Joi.string()
+      .trim()
+      .email({ tlds: { allow: false } })
+      .required(),
     phone: Joi.string().min(7).max(50).required(),
     bookingDate: Joi.string()
       .pattern(/^\d{4}-\d{2}-\d{2}$/)

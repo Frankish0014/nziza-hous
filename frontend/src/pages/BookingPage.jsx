@@ -9,6 +9,23 @@ import {
 import ScrollReveal from '../components/ScrollReveal';
 import { asArray } from '../lib/asArray';
 
+function bookingSuccessUserMessage(notif, email) {
+  if (!notif) return 'Booking submitted successfully.';
+  switch (notif.userEmailStatus) {
+    case 'sent':
+      return `Booking submitted successfully. We've sent a confirmation to ${email} — check your inbox or spam folder.`;
+    case 'smtp_off':
+      return 'Booking submitted successfully. Email delivery is not set up on the server yet — your booking is saved and our team will follow up.';
+    case 'failed':
+      if (notif.recipientLikelyInvalid) {
+        return 'Booking submitted successfully. That email address could not be reached — your booking is saved; please contact us with another email or phone so we can confirm.';
+      }
+      return 'Booking submitted successfully. Your booking is saved. If you do not see a confirmation email soon, check spam — or contact us. Our team will still confirm your reservation.';
+    default:
+      return 'Booking submitted successfully.';
+  }
+}
+
 const steps = [
   { n: '1', label: 'Select service' },
   { n: '2', label: 'Time & payment' },
@@ -56,13 +73,14 @@ export default function BookingPage() {
   };
 
   const loadHistory = async (email) => {
-    if (!email) {
+    const key = typeof email === 'string' ? email.trim().toLowerCase() : '';
+    if (!key) {
       setHistory([]);
       return;
     }
     setHistoryLoading(true);
     try {
-      const bookingData = await getBookings(email);
+      const bookingData = await getBookings(key);
       setHistory(asArray(bookingData));
     } finally {
       setHistoryLoading(false);
@@ -124,12 +142,13 @@ export default function BookingPage() {
     }
     try {
       const uploaded = await uploadPaymentProof(proofFile);
-      await createBooking({
+      const result = await createBooking({
         ...form,
         serviceId: Number(form.serviceId),
         paymentProofUrl: uploaded.url,
       });
-      setMessage('Booking submitted successfully. A confirmation email has been sent to you.');
+      const notif = result?.emailNotification;
+      setMessage(bookingSuccessUserMessage(notif, form.email.trim()));
       setProofFile(null);
       setForm((prev) => ({ ...prev, bookingDate: '', timeSlot: '' }));
       await loadHistory(form.email);

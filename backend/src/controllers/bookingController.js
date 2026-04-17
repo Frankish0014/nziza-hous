@@ -16,7 +16,7 @@ export const getBookings = async (req, res, next) => {
     const emailParam = req.query.email;
     const data =
       emailParam !== undefined && String(emailParam).trim() !== ''
-        ? await bookingService.listBookingsByEmail(String(emailParam).trim())
+        ? await bookingService.listBookingsByEmail(String(emailParam).trim().toLowerCase())
         : await bookingService.listBookings();
     return successResponse(res, data);
   } catch (err) {

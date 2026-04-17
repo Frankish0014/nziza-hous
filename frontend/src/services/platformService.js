@@ -1,8 +1,27 @@
 import { api } from './api';
+import {
+  fetchStaticCatalog,
+  isStaticCatalogMode,
+  staticAvailabilityPayload,
+} from './staticCatalog.js';
 
-export const getServices = async () => (await api.get('/services')).data.data;
-export const getServiceById = async (id) => (await api.get(`/services/${id}`)).data.data;
+export const getServices = async () => {
+  if (isStaticCatalogMode()) return fetchStaticCatalog();
+  return (await api.get('/services')).data.data;
+};
+
+export const getServiceById = async (id) => {
+  if (isStaticCatalogMode()) {
+    const list = await fetchStaticCatalog();
+    return list.find((s) => Number(s.id) === Number(id)) ?? null;
+  }
+  return (await api.get(`/services/${id}`)).data.data;
+};
+
 export const getServiceAvailability = async (serviceId, { from, to } = {}) => {
+  if (isStaticCatalogMode()) {
+    return staticAvailabilityPayload(serviceId, from, to);
+  }
   const params = {};
   if (from) params.from = from;
   if (to) params.to = to;
