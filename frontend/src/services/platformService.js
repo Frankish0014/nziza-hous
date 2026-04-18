@@ -5,9 +5,22 @@ import {
   staticAvailabilityPayload,
 } from './staticCatalog.js';
 
+/** When Postgres has no published rows yet, still show bundled public/catalog.json. */
+async function publicCatalogFallback() {
+  try {
+    return await fetchStaticCatalog();
+  } catch {
+    return [];
+  }
+}
+
 export const getServices = async () => {
   if (isStaticCatalogMode()) return fetchStaticCatalog();
-  return (await api.get('/services')).data.data;
+  const { data } = await api.get('/services');
+  const raw = data?.data;
+  const list = Array.isArray(raw) ? raw : [];
+  if (list.length > 0) return list;
+  return publicCatalogFallback();
 };
 
 export const getServiceById = async (id) => {
@@ -15,7 +28,15 @@ export const getServiceById = async (id) => {
     const list = await fetchStaticCatalog();
     return list.find((s) => Number(s.id) === Number(id)) ?? null;
   }
-  return (await api.get(`/services/${id}`)).data.data;
+  try {
+    const row = (await api.get(`/services/${id}`)).data?.data;
+    if (row) return row;
+  } catch (err) {
+    const status = err?.response?.status;
+    if (status !== 404) throw err;
+  }
+  const list = await publicCatalogFallback();
+  return list.find((s) => Number(s.id) === Number(id)) ?? null;
 };
 
 export const getServiceAvailability = async (serviceId, { from, to } = {}) => {
