@@ -1,7 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { getThematicExperienceImage } from '@/client/experiencePhotos';
+import {
+  getThematicExperienceImage,
+  getThematicImageObjectPosition,
+} from '@/client/experiencePhotos';
 
 function formatType(type) {
   if (!type) return 'Experience';
@@ -10,6 +13,7 @@ function formatType(type) {
 
 export default function ServiceCard({ service }) {
   const image = service.media?.[0]?.url || getThematicExperienceImage(service.type);
+  const objectPosition = getThematicImageObjectPosition(service.type);
 
   return (
     <article className="nh-shine-wrap card-rise group flex h-full flex-col overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-cream)]/80 shadow-sm">
@@ -18,6 +22,7 @@ export default function ServiceCard({ service }) {
           src={image}
           alt={service.name}
           className="h-60 w-full object-cover transition duration-700 ease-out group-hover:scale-[1.06]"
+          style={objectPosition ? { objectPosition } : undefined}
           loading="lazy"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--nh-deep)]/55 via-transparent to-transparent opacity-80" />

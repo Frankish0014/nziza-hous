@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { EXPERIENCE_IMAGE } from '@/client/experiencePhotos';
+import { COFFEE_THEMATIC_OBJECT_POSITION, EXPERIENCE_IMAGE } from '@/client/experiencePhotos';
 import ScrollReveal from '@/components/ScrollReveal';
 
 const marqueeItems = [
@@ -83,6 +83,7 @@ const experiences = [
     href: '/services',
     icon: icons.coffee,
     image: EXPERIENCE_IMAGE.coffee,
+    imageObjectPosition: COFFEE_THEMATIC_OBJECT_POSITION,
     accent: 'from-orange-400/25 to-amber-800/10',
     ring: 'ring-orange-400/35',
   },
@@ -292,6 +293,7 @@ export default function HomePage() {
                     width={800}
                     height={520}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    style={item.imageObjectPosition ? { objectPosition: item.imageObjectPosition } : undefined}
                     loading="lazy"
                     decoding="async"
                   />

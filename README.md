@@ -109,7 +109,7 @@ npm run dev
 
 ## Deployment
 
-- Frontend: Vercel
+- Frontend: Netlify (see `netlify.toml`; set `VITE_API_URL` or `/api` redirects there)
 - Backend: Render or Railway
 - PostgreSQL: Supabase or Neon
 

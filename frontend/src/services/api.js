@@ -27,12 +27,12 @@ function resolveApiBase() {
       // eslint-disable-next-line no-console
       console.warn(
         '[nziza-house] Production build ignored VITE_API_URL pointing at localhost (each visitor’s browser would call their own PC). ' +
-          'Using same-origin /api instead. Fix: set VITE_API_URL to your public API in the host env (Vercel → Settings → Environment Variables) and redeploy, ' +
-          'or add an /api rewrite in vercel.json to your backend.',
+          'Using same-origin /api instead. Fix: set VITE_API_URL to your public API base (ending in /api) under Netlify → Site configuration → Environment variables, rebuild the site, ' +
+          'or uncomment/add an `/api/*` redirect in netlify.toml (must appear before the SPA `/* → /index.html` rule) to proxy to your backend.',
       );
     } else if (import.meta.env.MODE === 'production') {
       console.debug(
-        '[nziza-house] No VITE_API_URL in build — using /api. Add it under Vercel env vars and rebuild, or add an /api rewrite in vercel.json.',
+        '[nziza-house] No VITE_API_URL in build — using same-origin /api. Set VITE_API_URL on Netlify and redeploy, or configure /api redirects in netlify.toml.',
       );
     }
   }
