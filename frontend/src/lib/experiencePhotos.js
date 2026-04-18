@@ -12,7 +12,7 @@ export function experiencePhoto(id, w = 800, h = 520) {
 export const COFFEE_THEMATIC_OBJECT_POSITION = 'center 72%';
 
 export const EXPERIENCE_IMAGE = {
-  gym: experiencePhoto('photo-1649888216899-047093431441'),
+  gym: experiencePhoto('photo-1603503364272-6e28e046b37a', 960, 960),
   apartment: apartmentPhoto,
   coffee: experiencePhoto('photo-1509042239860-f550ce710b93', 1200, 900),
   sauna: experiencePhoto('photo-1540555700478-4be289fbecef'),
