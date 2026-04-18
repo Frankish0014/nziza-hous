@@ -9,6 +9,28 @@ import {
 import ScrollReveal from '../components/ScrollReveal';
 import { asArray } from '../lib/asArray';
 
+/** API returns `{ slot, booked, past }`; bundled catalog uses plain strings. */
+function normalizeDaySlots(slots) {
+  if (!Array.isArray(slots)) return [];
+  const out = [];
+  for (const s of slots) {
+    if (typeof s === 'string') {
+      out.push(s);
+    } else if (s && typeof s === 'object' && typeof s.slot === 'string') {
+      if (!s.booked && !s.past) out.push(s.slot);
+    }
+  }
+  return out;
+}
+
+function normalizeAvailabilityResponse(resp) {
+  const days = Array.isArray(resp?.data) ? resp.data : [];
+  return days.map((day) => ({
+    ...day,
+    slots: normalizeDaySlots(day.slots),
+  }));
+}
+
 function bookingSuccessUserMessage(notif, email) {
   if (!notif) return 'Booking submitted successfully.';
   switch (notif.userEmailStatus) {
@@ -99,7 +121,7 @@ export default function BookingPage() {
     setAvailabilityError('');
     try {
       const resp = await getServiceAvailability(serviceId);
-      const next = Array.isArray(resp?.data) ? resp.data : [];
+      const next = normalizeAvailabilityResponse(resp);
       setAvailability(next);
 
       if (!form.bookingDate && next.length) {

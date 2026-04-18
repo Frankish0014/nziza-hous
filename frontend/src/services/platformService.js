@@ -46,8 +46,19 @@ export const getServiceAvailability = async (serviceId, { from, to } = {}) => {
   const params = {};
   if (from) params.from = from;
   if (to) params.to = to;
-  const { data } = await api.get(`/services/${serviceId}/availability`, { params });
-  return data.data;
+  try {
+    const { data } = await api.get(`/services/${serviceId}/availability`, { params });
+    return data.data;
+  } catch (err) {
+    /** Backend only has availability for DB rows; catalog-backed services return 404 in prod. */
+    const status = err?.response?.status;
+    if (status !== 404) throw err;
+    const catalog = await publicCatalogFallback();
+    const id = Number(serviceId);
+    const exists = catalog.some((s) => Number(s.id) === id);
+    if (!exists) throw err;
+    return staticAvailabilityPayload(serviceId, from, to);
+  }
 };
 export const createService = async (payload) => (await api.post('/services', payload)).data.data;
 export const updateService = async (id, payload) => (await api.put(`/services/${id}`, payload)).data.data;

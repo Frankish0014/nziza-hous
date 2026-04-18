@@ -6,7 +6,7 @@ export function experiencePhoto(id, w = 800, h = 520) {
 
 export const EXPERIENCE_IMAGE = {
   gym: experiencePhoto('photo-1649888216899-047093431441'),
-  apartment: experiencePhoto('photo-1522708323590-d24dbb6b0267'),
+  apartment: '/images/appartment.jpeg',
   coffee: experiencePhoto('photo-1554118811-1e0d58224f24'),
   sauna: experiencePhoto('photo-1540555700478-4be289fbecef'),
   massage: experiencePhoto('photo-1675159364445-80fa5e54314a'),

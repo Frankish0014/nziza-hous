@@ -1,4 +1,9 @@
-/** Thematic Unsplash photos by venue kind — same art direction as the home “On the property” cards. */
+/**
+ * Venue imagery: apartments use `src/images/appartment.jpeg`; other categories use thematic Unsplash photos
+ * (same art direction as the home “On the property” cards).
+ */
+
+import apartmentPhoto from '../images/appartment.jpeg';
 
 export function experiencePhoto(id, w = 800, h = 520) {
   return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=85`;
@@ -6,7 +11,7 @@ export function experiencePhoto(id, w = 800, h = 520) {
 
 export const EXPERIENCE_IMAGE = {
   gym: experiencePhoto('photo-1649888216899-047093431441'),
-  apartment: experiencePhoto('photo-1522708323590-d24dbb6b0267'),
+  apartment: apartmentPhoto,
   coffee: experiencePhoto('photo-1554118811-1e0d58224f24'),
   sauna: experiencePhoto('photo-1540555700478-4be289fbecef'),
   massage: experiencePhoto('photo-1675159364445-80fa5e54314a'),
