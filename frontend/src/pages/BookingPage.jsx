@@ -31,6 +31,26 @@ function normalizeAvailabilityResponse(resp) {
   }));
 }
 
+function formatBookingSubmitError(err) {
+  const data = err?.response?.data;
+  if (Array.isArray(data?.details) && data.details.length) {
+    const joined = data.details.join(' ');
+    return data.message ? `${data.message}: ${joined}` : joined;
+  }
+  if (data?.message) return data.message;
+  if (!err?.response) {
+    return (
+      'Could not reach the booking server. On the live Netlify site, set environment variable VITE_API_URL to your public API base ' +
+      '(for example https://your-api.example.com/api), rebuild, or add an /api proxy in netlify.toml before the SPA /* rule.'
+    );
+  }
+  const status = err.response.status;
+  if (status >= 500) {
+    return 'The booking server had a problem. Please try again shortly or contact us.';
+  }
+  return `Could not create booking (HTTP ${status}). Please try again or contact us.`;
+}
+
 function bookingSuccessUserMessage(notif, email) {
   if (!notif) return 'Booking submitted successfully.';
   switch (notif.userEmailStatus) {
@@ -195,7 +215,7 @@ export default function BookingPage() {
       await loadHistory(form.email);
       await loadAvailability(form.serviceId);
     } catch (err) {
-      setMessage(err.response?.data?.message || 'Could not create booking');
+      setMessage(formatBookingSubmitError(err));
     }
   };
 
