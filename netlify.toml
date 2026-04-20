@@ -1,18 +1,16 @@
-# Netlify picks this up from the repo root. Build settings may also be set in the Netlify UI.
+# Netlify picks this up from the repo root. Build settings in the Netlify UI override these if set there.
+
+[build]
+  # Prebuild writes frontend/public/_redirects when NETLIFY_API_ORIGIN is set (see scripts/netlify-prebuild.mjs).
+  command = "node scripts/netlify-prebuild.mjs && npm --workspace frontend run build"
+  publish = "frontend/dist"
 
 [build.environment]
   # Vite 8 + Rolldown expect a current Node; keeps Linux builds consistent with local dev.
   NODE_VERSION = "22"
 
-# Proxy API requests to your deployed backend (optional alternative to VITE_API_URL at build time).
-# Add this block BEFORE the SPA rule, replace the URL, commit, and redeploy.
-# [[redirects]]
-#   from = "/api/*"
-#   to = "https://YOUR-API.public.host/api/:splat"
-#   status = 200
-#   force = true
-
 # Single-page app: /services etc. must serve index.html (avoids 404 on refresh or deep links).
+# _redirects from the prebuild script is processed first and sends /api/* to your backend.
 [[redirects]]
   from = "/*"
   to = "/index.html"

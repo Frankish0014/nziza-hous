@@ -109,9 +109,20 @@ npm run dev
 
 ## Deployment
 
-- Frontend: Netlify (see `netlify.toml`; set `VITE_API_URL` or `/api` redirects there)
+- Frontend: Netlify (see root `netlify.toml` and `scripts/netlify-prebuild.mjs`)
 - Backend: Render or Railway
 - PostgreSQL: Supabase or Neon
+
+### Netlify + API (fix 404 on `/api/bookings/upload-proof`)
+
+The browser calls `/api/...` on your Netlify hostname. Netlify must either **proxy** those paths to Express or the build must set **`VITE_API_URL`** to your public API (ending in `/api`).
+
+**Option A (recommended):** In Netlify → Environment variables, set **`NETLIFY_API_ORIGIN`** to your API host only, for example `https://nziza-api.onrender.com` (no `/api` suffix). The prebuild step writes `frontend/public/_redirects` so `/api/*` is proxied to your backend. Redeploy.
+
+**Option B:** Set **`VITE_API_URL`** at build time to your full API base, e.g. `https://nziza-api.onrender.com/api`, then rebuild.
+
+If the Netlify UI **overrides** the build command, either remove that override so `netlify.toml` `[build].command` runs, or set the command to:  
+`node scripts/netlify-prebuild.mjs && npm --workspace frontend run build`
 
 Recommended:
 - Use managed Postgres pooling
