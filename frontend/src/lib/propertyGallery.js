@@ -3,12 +3,12 @@
  */
 
 import studioSpace from '../images/2.jpeg';
-import loungeArea from '../images/4.jpeg';
+import loungeArea from '../images/appartment.jpeg';
 import bedroomStay from '../images/5.jpeg';
 import bedroomWorkspace from '../images/6.jpeg';
 import interiorFlooring from '../images/7.jpeg';
-import gymFloor from '../images/8.jpeg';
-import gymEquipment from '../images/9.jpeg';
+import gymFloor from '../images/Gym 1.jpeg';
+import gymEquipment from '../images/Gym 2.jpeg';
 import salonSide from '../images/nziza side salon.jpeg';
 
 export const PROPERTY_GALLERY_ITEMS = [
