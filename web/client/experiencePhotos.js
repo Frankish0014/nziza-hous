@@ -12,7 +12,7 @@ export const EXPERIENCE_IMAGE = {
   coffee: experiencePhoto('photo-1509042239860-f550ce710b93', 1200, 900),
   sauna: experiencePhoto('photo-1540555700478-4be289fbecef'),
   massage: experiencePhoto('photo-1675159364445-80fa5e54314a'),
-  lodge: experiencePhoto('photo-1478131143081-80f7f84ca84d'),
+  lodge: '/images/lodge.jpeg',
 };
 
 const FALLBACK = EXPERIENCE_IMAGE.apartment;

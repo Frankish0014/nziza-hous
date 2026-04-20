@@ -2,10 +2,82 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ScrollReveal from '../components/ScrollReveal';
 import { getServiceById } from '../services/platformService';
+import gymRoomPhotoOne from '../images/Gym 1.jpeg';
+import gymRoomPhotoTwo from '../images/Gym 2.jpeg';
 
 function formatType(type) {
   if (!type) return 'Experience';
   return String(type).replace(/_/g, ' ');
+}
+
+function getLocalGalleryMedia(service) {
+  const serviceName = String(service?.name || '').toLowerCase();
+  const serviceType = String(service?.type || '').toLowerCase();
+  const isGym = serviceName.includes('gym') || serviceType.includes('gym');
+  if (!isGym) return [];
+
+  return [
+    { id: 'gym-local-1', url: gymRoomPhotoOne, alt_text: 'Nziza Gym room view' },
+    { id: 'gym-local-2', url: gymRoomPhotoTwo, alt_text: 'Nziza Gym training area' },
+  ];
+}
+
+function getServiceDetails(type) {
+  const t = String(type || '').toLowerCase();
+  if (t.includes('gym')) {
+    return {
+      standardUnit: 'per session',
+      duration: '60-90 minutes',
+      audience: 'Beginners to advanced members',
+      highlights: ['Modern cardio + strength equipment', 'Trainers available on request', 'Clean changing and shower access'],
+    };
+  }
+  if (t.includes('apartment')) {
+    return {
+      standardUnit: 'per night',
+      duration: 'Overnight stays',
+      audience: 'Solo guests, couples, and business travelers',
+      highlights: ['Private furnished room', 'Calm work and rest environment', 'Housekeeping support'],
+    };
+  }
+  if (t.includes('coffee')) {
+    return {
+      standardUnit: 'menu pricing',
+      duration: 'All day service',
+      audience: 'Guests, meetings, and remote workers',
+      highlights: ['Coffee and light meals', 'Comfortable seating zones', 'Fast service for meetings'],
+    };
+  }
+  if (t.includes('sauna')) {
+    return {
+      standardUnit: 'per heat session',
+      duration: '45-60 minutes',
+      audience: 'Recovery and wellness-focused guests',
+      highlights: ['Relaxation-focused heat therapy', 'Private booking windows', 'Staff-supported check-in'],
+    };
+  }
+  if (t.includes('massage')) {
+    return {
+      standardUnit: 'per therapy session',
+      duration: '60-90 minutes',
+      audience: 'Guests seeking recovery and stress relief',
+      highlights: ['Therapist-led personalized treatment', 'Targeted muscle recovery', 'Quiet treatment setting'],
+    };
+  }
+  if (t.includes('lodge')) {
+    return {
+      standardUnit: 'per stay package',
+      duration: 'Overnight / weekend packages',
+      audience: 'Travelers, families, and weekend guests',
+      highlights: ['Comfortable lodge accommodation', 'Hospitality-led guest support', 'Easy access to all on-site amenities'],
+    };
+  }
+  return {
+    standardUnit: 'per booking',
+    duration: 'Depends on service',
+    audience: 'All guests',
+    highlights: ['Curated hospitality experience'],
+  };
 }
 
 export default function ServiceDetailsPage() {
@@ -28,7 +100,13 @@ export default function ServiceDetailsPage() {
     );
   }
 
-  const media = service.media || [];
+  const apiMedia = Array.isArray(service.media) ? service.media : [];
+  const localMedia = getLocalGalleryMedia(service);
+  const media = [...apiMedia, ...localMedia].filter(
+    (item, index, arr) => arr.findIndex((candidate) => candidate.url === item.url) === index,
+  );
+  const details = getServiceDetails(service.type);
+  const standardPriceText = service.price ? `${service.currency} ${service.price} ${details.standardUnit}` : 'Custom pricing';
 
   return (
     <main className="pb-20">
@@ -59,6 +137,42 @@ export default function ServiceDetailsPage() {
             </div>
           </ScrollReveal>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-12 md:py-16">
+        <div className="grid gap-6 md:grid-cols-3">
+          <ScrollReveal>
+            <article className="rounded-3xl border border-[var(--nh-border)] bg-white/85 p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--nh-accent)]">Standard pricing</p>
+              <p className="font-display mt-3 text-2xl text-[var(--nh-ink)]">{standardPriceText}</p>
+            </article>
+          </ScrollReveal>
+          <ScrollReveal delay={50}>
+            <article className="rounded-3xl border border-[var(--nh-border)] bg-white/85 p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--nh-accent)]">Typical duration</p>
+              <p className="font-display mt-3 text-2xl text-[var(--nh-ink)]">{details.duration}</p>
+            </article>
+          </ScrollReveal>
+          <ScrollReveal delay={100}>
+            <article className="rounded-3xl border border-[var(--nh-border)] bg-white/85 p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--nh-accent)]">Ideal for</p>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--nh-ink-muted)]">{details.audience}</p>
+            </article>
+          </ScrollReveal>
+        </div>
+        <ScrollReveal delay={140}>
+          <article className="mt-6 rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-bg)]/55 p-6 shadow-sm">
+            <h2 className="font-display text-2xl font-medium text-[var(--nh-ink)]">What to expect</h2>
+            <ul className="mt-4 space-y-2 text-sm text-[var(--nh-ink-muted)]">
+              {details.highlights.map((point) => (
+                <li key={point} className="flex items-start gap-2">
+                  <span className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--nh-accent)]" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        </ScrollReveal>
       </section>
 
       {media.length > 0 && (

@@ -1,5 +1,7 @@
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { COFFEE_THEMATIC_OBJECT_POSITION, EXPERIENCE_IMAGE } from '../lib/experiencePhotos';
+import { PROPERTY_GALLERY_ITEMS } from '../lib/propertyGallery';
 import ScrollReveal from '../components/ScrollReveal';
 import heroBackground from '../images/nziza_background.jpeg';
 
@@ -14,115 +16,77 @@ const marqueeItems = [
   'Hospitality',
 ];
 
-const icons = {
-  gym: (
-    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path d="M6 4v16M10 9v6M14 9v6M18 4v16M4 8h4M16 8h4M4 16h4M16 16h4" strokeLinecap="round" />
-    </svg>
-  ),
-  home: (
-    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9.5z" strokeLinejoin="round" />
-    </svg>
-  ),
-  coffee: (
-    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path d="M6 7h8a4 4 0 010 8H6V7zM18 10v2M6 19h8" strokeLinecap="round" />
-    </svg>
-  ),
-  sauna: (
-    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path d="M8 16c2-2 2-4 0-6M12 18c3-3 3-7 0-10M16 15c1.5-1.5 1.5-3.5 0-5" strokeLinecap="round" />
-      <rect x="4" y="4" width="16" height="16" rx="2" />
-    </svg>
-  ),
-  massage: (
-    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path d="M12 5v14M9 8c0-1.5 1-2 3-2s3 .5 3 2-1.5 2-3 2-3 .5-3 2M7 20h10" strokeLinecap="round" />
-    </svg>
-  ),
-  lodge: (
-    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path d="M12 3l9 7H3l9-7zM5 10h14v10a1 1 0 01-1 1H6a1 1 0 01-1-1V10z" strokeLinejoin="round" />
-    </svg>
-  ),
-};
-
 const experiences = [
   {
+    id: 'gym',
+    serviceId: 1,
     title: 'Gym',
-    tag: 'Strength & energy',
     description:
       'Train in a premium fitness space with modern equipment, expert guidance, and a motivating atmosphere built for real progress.',
-    cta: 'Book training',
-    href: '/booking',
-    icon: icons.gym,
+    href: '/services/1',
     image: EXPERIENCE_IMAGE.gym,
-    accent: 'from-amber-500/25 to-orange-600/10',
-    ring: 'ring-amber-500/30',
   },
   {
+    id: 'apartment',
+    serviceId: 2,
     title: 'Apartments',
-    tag: 'Short & long stay',
     description:
       'Designer apartments for short or long stays — privacy, kitchen comforts, and the feel of a true second home.',
-    cta: 'Reserve a stay',
-    href: '/booking',
-    icon: icons.home,
+    href: '/services/2',
     image: EXPERIENCE_IMAGE.apartment,
-    accent: 'from-emerald-500/20 to-teal-600/10',
-    ring: 'ring-emerald-500/25',
   },
   {
+    id: 'coffee',
+    serviceId: 3,
     title: 'Coffee shop',
-    tag: 'Slow mornings',
     description:
       'Artisan coffee, fresh bites, and calm corners for meetings, remote work, and unhurried conversation.',
-    cta: 'Plan a visit',
-    href: '/services',
-    icon: icons.coffee,
+    href: '/services/3',
     image: EXPERIENCE_IMAGE.coffee,
     imageObjectPosition: COFFEE_THEMATIC_OBJECT_POSITION,
-    accent: 'from-orange-400/25 to-amber-800/10',
-    ring: 'ring-orange-400/35',
   },
   {
+    id: 'sauna',
+    serviceId: 4,
     title: 'Sauna',
-    tag: 'Deep recovery',
     description:
       'Warm, restorative heat rituals to improve circulation, soothe muscles, and reset a busy mind.',
-    cta: 'Schedule sauna',
-    href: '/booking',
-    icon: icons.sauna,
+    href: '/services/4',
     image: EXPERIENCE_IMAGE.sauna,
-    accent: 'from-rose-400/20 to-red-900/15',
-    ring: 'ring-rose-400/30',
   },
   {
+    id: 'massage',
+    serviceId: 5,
     title: 'Massage',
-    tag: 'Therapeutic calm',
     description:
       'Personalized bodywork that releases tension, supports recovery, and leaves you grounded.',
-    cta: 'Book massage',
-    href: '/booking',
-    icon: icons.massage,
+    href: '/services/5',
     image: EXPERIENCE_IMAGE.massage,
-    accent: 'from-violet-400/20 to-indigo-900/10',
-    ring: 'ring-violet-400/30',
   },
   {
+    id: 'lodge',
+    serviceId: 6,
     title: 'Lodge',
-    tag: 'Nature-quiet stay',
     description:
       'Serene lodge nights where thoughtful design, soft textures, and attentive hosting come together.',
-    cta: 'Lodge experience',
-    href: '/booking',
-    icon: icons.lodge,
+    href: '/services/6',
     image: EXPERIENCE_IMAGE.lodge,
-    accent: 'from-sky-400/15 to-slate-800/20',
-    ring: 'ring-sky-500/25',
   },
 ];
+const experienceFilters = [
+  { id: 'all', label: 'All' },
+  { id: 'gym', label: 'Gym' },
+  { id: 'apartment', label: 'Apartments' },
+  { id: 'coffee', label: 'Coffee' },
+  { id: 'sauna', label: 'Sauna' },
+  { id: 'massage', label: 'Massage' },
+  { id: 'lodge', label: 'Lodge' },
+];
+
+function matchesExperienceFilter(item, filterId) {
+  if (filterId === 'all') return true;
+  return item.id === filterId;
+}
 
 const trustMetrics = [
   { label: 'Experiences on-site', value: '6' },
@@ -133,6 +97,11 @@ const trustMetrics = [
 
 export default function HomePage() {
   const duplicatedMarquee = [...marqueeItems, ...marqueeItems];
+  const [activeExperienceFilter, setActiveExperienceFilter] = useState('all');
+  const filteredExperiences = useMemo(
+    () => experiences.filter((item) => matchesExperienceFilter(item, activeExperienceFilter)),
+    [activeExperienceFilter],
+  );
 
   return (
     <main className="overflow-x-hidden">
@@ -264,62 +233,114 @@ export default function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-20 md:py-28">
         <ScrollReveal>
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-accent)]">On the property</p>
-            <h2 className="font-display mt-4 text-3xl font-medium tracking-tight text-[var(--nh-ink)] md:text-5xl">
-              Move through spaces designed for different moods — all minutes apart.
-            </h2>
-            <p className="mt-4 text-[var(--nh-ink-muted)] md:text-lg">
-              Tap a card to continue your journey. Every venue shares the same quiet standard of service: intentional, human,
-              never rushed.
+          <div className="max-w-3xl">
+            <p className="text-lg text-[var(--nh-ink-muted)]">
+              Filter by venue, explore details, then book the rhythm that fits your week — training, stay, coffee, heat,
+              touch, or a full lodge escape.
             </p>
           </div>
         </ScrollReveal>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {experiences.map((item, idx) => (
+        <ScrollReveal delay={80} className="mt-10">
+          <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-2 md:flex-wrap md:overflow-visible">
+            {experienceFilters.map((filter) => (
+              <button
+                key={filter.id}
+                type="button"
+                onClick={() => setActiveExperienceFilter(filter.id)}
+                className={`snap-start rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition ${
+                  activeExperienceFilter === filter.id
+                    ? 'bg-[var(--nh-deep)] text-[#faf6ef] shadow-md'
+                    : 'border border-[var(--nh-border)] bg-white/80 text-[var(--nh-ink-muted)] hover:border-[var(--nh-accent)]/35 hover:text-[var(--nh-ink)]'
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+        </ScrollReveal>
+
+        <div className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {filteredExperiences.map((item, idx) => (
             <ScrollReveal key={item.title} delay={idx * 60}>
               <article
-                className={`card-rise group relative flex h-full flex-col overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-cream)]/90 p-6 shadow-sm ring-1 ${item.ring} ring-inset transition-colors hover:bg-white`}
+                className={`nh-shine-wrap card-rise group flex h-full flex-col overflow-hidden rounded-3xl border bg-[var(--nh-cream)]/80 shadow-sm ${
+                  item.id === 'lodge' ? 'border-[color:rgba(226,190,164,0.8)]' : 'border-[var(--nh-border)]'
+                }`}
               >
-                <div
-                  className={`pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br ${item.accent} opacity-70 blur-2xl transition duration-500 group-hover:opacity-100`}
-                  aria-hidden
-                />
-                <div className="relative -mx-6 -mt-6 mb-5 aspect-[16/10] overflow-hidden rounded-t-3xl border-b border-[var(--nh-border)]">
+                <div className="relative overflow-hidden">
                   <img
                     src={item.image}
                     alt={`${item.title} — Nziza House`}
                     width={800}
                     height={520}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    className="h-60 w-full object-cover transition duration-700 ease-out group-hover:scale-[1.06]"
                     style={item.imageObjectPosition ? { objectPosition: item.imageObjectPosition } : undefined}
                     loading="lazy"
                     decoding="async"
                   />
+                  {item.id !== 'lodge' && (
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--nh-deep)]/55 via-transparent to-transparent opacity-80" />
+                  )}
+                  <span className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--nh-accent)] shadow-sm backdrop-blur-sm">
+                    {item.title}
+                  </span>
                 </div>
-                <div className="relative flex items-start justify-between gap-4">
-                  <div className="rounded-2xl border border-[var(--nh-border)] bg-white/80 p-3 text-[var(--nh-accent)] shadow-sm">
-                    {item.icon}
+                <div className="flex flex-1 flex-col space-y-3 p-5 md:p-6">
+                  <h3 className="font-display text-3xl font-medium text-[var(--nh-ink)]">{`Nziza ${item.title}`}</h3>
+                  <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[var(--nh-ink-muted)]">{item.description}</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                    <span className="text-sm font-semibold text-[var(--nh-accent)]">Custom pricing</span>
+                    <Link
+                      to={item.href}
+                      className="inline-flex items-center gap-1 rounded-full border border-[var(--nh-border)] bg-white/90 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--nh-ink)] transition hover:border-[var(--nh-accent)]/45 hover:text-[var(--nh-accent)]"
+                    >
+                      View
+                      <span aria-hidden className="transition group-hover:translate-x-0.5">
+                        →
+                      </span>
+                    </Link>
                   </div>
-                  <span className="rounded-full bg-[var(--nh-accent-soft)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--nh-accent)]">
-                    {item.tag}
-                  </span>
                 </div>
-                <h3 className="font-display relative mt-5 text-2xl font-medium text-[var(--nh-ink)]">{item.title}</h3>
-                <p className="relative mt-3 flex-1 text-sm leading-relaxed text-[var(--nh-ink-muted)]">{item.description}</p>
-                <Link
-                  to={item.href}
-                  className="relative mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--nh-accent)] transition group-hover:gap-3"
-                >
-                  {item.cta}
-                  <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
               </article>
             </ScrollReveal>
           ))}
+        </div>
+      </section>
+
+      <section className="border-y border-[var(--nh-border)] bg-gradient-to-b from-[var(--nh-bg)] to-[var(--nh-bg-warm)] py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-4">
+          <ScrollReveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-accent)]">On the ground</p>
+            <h2 className="font-display mt-4 max-w-2xl text-3xl font-medium tracking-tight text-[var(--nh-ink)] md:text-4xl">
+              A few more views of the address
+            </h2>
+            <p className="mt-4 max-w-2xl text-[var(--nh-ink-muted)] md:text-lg">
+              Real spaces — movement studios, lounges, suites, and training floors — captured as guests experience them.
+            </p>
+          </ScrollReveal>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {PROPERTY_GALLERY_ITEMS.map((item, idx) => (
+              <ScrollReveal key={item.alt} delay={idx * 40}>
+                <figure className="group overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-cream)]/90 shadow-sm">
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img
+                      src={item.src}
+                      alt={item.alt}
+                      width={600}
+                      height={750}
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <figcaption className="border-t border-[var(--nh-border)] bg-white/90 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--nh-ink-muted)]">
+                    {item.caption}
+                  </figcaption>
+                </figure>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </section>
 

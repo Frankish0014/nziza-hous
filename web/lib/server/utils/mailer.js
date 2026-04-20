@@ -21,7 +21,6 @@ function resolveFromAddress() {
   if (isGmail && authUser) {
     const fromBare = bareEmail(configured);
     if (fromBare && fromBare !== authUser) {
-      // eslint-disable-next-line no-console
       console.warn(
         '[mail] FROM_EMAIL does not match SMTP_USER for Gmail; sending as SMTP_USER for reliable delivery.',
       );

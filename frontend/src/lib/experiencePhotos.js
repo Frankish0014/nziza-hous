@@ -1,23 +1,24 @@
 /**
- * Venue imagery: apartments use `src/images/appartment.jpeg`; other categories use thematic Unsplash photos
- * (same art direction as the home “On the property” cards).
+ * Venue imagery from `src/images/` — used on home “On the property” cards and service-card fallbacks.
  */
 
 import apartmentPhoto from '../images/appartment.jpeg';
+import gymPhoto from '../images/gym.jpeg';
+import coffeeSalonPhoto from '../images/nziza salon.jpeg';
+import saunaPhoto from '../images/entrance.jpeg';
+import massagePhoto from '../images/bed.jpeg';
+import lodgePhoto from '../images/lodge.jpeg';
 
-export function experiencePhoto(id, w = 800, h = 520) {
-  return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=85`;
-}
-
-export const COFFEE_THEMATIC_OBJECT_POSITION = 'center 72%';
+/** Fine-tune focal point for the coffee/lounge hero crop on cards */
+export const COFFEE_THEMATIC_OBJECT_POSITION = 'center 48%';
 
 export const EXPERIENCE_IMAGE = {
-  gym: experiencePhoto('photo-1603503364272-6e28e046b37a', 960, 960),
+  gym: gymPhoto,
   apartment: apartmentPhoto,
-  coffee: experiencePhoto('photo-1509042239860-f550ce710b93', 1200, 900),
-  sauna: experiencePhoto('photo-1540555700478-4be289fbecef'),
-  massage: experiencePhoto('photo-1675159364445-80fa5e54314a'),
-  lodge: experiencePhoto('photo-1478131143081-80f7f84ca84d'),
+  coffee: coffeeSalonPhoto,
+  sauna: saunaPhoto,
+  massage: massagePhoto,
+  lodge: lodgePhoto,
 };
 
 const FALLBACK = EXPERIENCE_IMAGE.apartment;

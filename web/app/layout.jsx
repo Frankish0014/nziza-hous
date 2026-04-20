@@ -21,9 +21,9 @@ export const metadata = {
   title: 'Nziza House',
   description: 'Six experiences under one roof — train, stay, sip, restore, unwind, and retreat.',
   icons: {
-    icon: [{ url: '/favicon.ico' }],
-    shortcut: ['/favicon.ico'],
-    apple: [{ url: '/favicon.ico' }],
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
   },
 };
 

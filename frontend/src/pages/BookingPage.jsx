@@ -54,6 +54,22 @@ const steps = [
   { n: '3', label: 'Confirmation' },
 ];
 
+const PAYMENT_DETAILS = {
+  mobile_money: {
+    label: 'Mobile Money (MoMo)',
+    accountName: 'Nziza House',
+    accountRef: '0788 000 111',
+    note: 'Use your booking name as payment reference, then upload screenshot proof.',
+  },
+  bank_transfer: {
+    label: 'Bank Transfer',
+    bankName: 'Bank of Kigali',
+    accountName: 'Nziza House Ltd',
+    accountNumber: '000456789123',
+    note: 'Transfer exact amount and upload transfer receipt or PDF slip.',
+  },
+};
+
 export default function BookingPage() {
   const [services, setServices] = useState([]);
   const [history, setHistory] = useState([]);
@@ -145,6 +161,9 @@ export default function BookingPage() {
     form.bookingDate && availability.length
       ? availability.find((d) => d.date === form.bookingDate)?.slots || []
       : [];
+  const selectedService = services.find((s) => String(s.id) === String(form.serviceId));
+  const amountLabel = selectedService?.price ? `${selectedService.currency} ${selectedService.price}` : 'Custom pricing';
+  const selectedPaymentDetails = PAYMENT_DETAILS[form.paymentMethod];
 
   const formatDateLabel = (iso) => {
     const dt = new Date(`${iso}T00:00:00Z`);
@@ -351,6 +370,12 @@ export default function BookingPage() {
               </div>
 
               <div className="rounded-2xl border border-[var(--nh-border)] bg-white/60 p-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-[var(--nh-accent)]">Payment preview</p>
+                <div className="mt-3 rounded-xl border border-[var(--nh-border)] bg-[var(--nh-bg)]/40 p-3">
+                  <p className="text-sm text-[var(--nh-ink-muted)]">Service amount</p>
+                  <p className="font-display mt-1 text-2xl text-[var(--nh-ink)]">{amountLabel}</p>
+                  {selectedService?.name && <p className="mt-1 text-xs text-[var(--nh-ink-muted)]">{selectedService.name}</p>}
+                </div>
                 <label htmlFor="booking-pay" className="mb-1.5 block text-sm font-medium text-[var(--nh-ink)]">
                   Payment method
                 </label>
@@ -363,8 +388,31 @@ export default function BookingPage() {
                 >
                   <option value="mobile_money">Mobile Money</option>
                   <option value="bank_transfer">Bank Transfer</option>
-                  <option value="card">Card</option>
                 </select>
+                {selectedPaymentDetails && (
+                  <div className="mt-3 rounded-xl border border-[var(--nh-border)] bg-white/70 p-3 text-sm text-[var(--nh-ink-muted)]">
+                    <p className="font-semibold text-[var(--nh-ink)]">{selectedPaymentDetails.label}</p>
+                    {'bankName' in selectedPaymentDetails && (
+                      <p className="mt-1">
+                        Bank: <span className="font-medium text-[var(--nh-ink)]">{selectedPaymentDetails.bankName}</span>
+                      </p>
+                    )}
+                    <p className="mt-1">
+                      Account name: <span className="font-medium text-[var(--nh-ink)]">{selectedPaymentDetails.accountName}</span>
+                    </p>
+                    {'accountNumber' in selectedPaymentDetails ? (
+                      <p className="mt-1">
+                        Account number:{' '}
+                        <span className="font-medium text-[var(--nh-ink)]">{selectedPaymentDetails.accountNumber}</span>
+                      </p>
+                    ) : (
+                      <p className="mt-1">
+                        MoMo number: <span className="font-medium text-[var(--nh-ink)]">{selectedPaymentDetails.accountRef}</span>
+                      </p>
+                    )}
+                    <p className="mt-2 text-xs">{selectedPaymentDetails.note}</p>
+                  </div>
+                )}
                 <label htmlFor="booking-proof" className="mt-4 mb-1.5 block text-sm font-medium text-[var(--nh-ink)]">
                   Proof of payment
                 </label>
