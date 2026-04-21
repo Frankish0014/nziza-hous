@@ -113,16 +113,20 @@ npm run dev
 - Backend: Render or Railway
 - PostgreSQL: Supabase or Neon
 
-### Netlify + API (fix 404 on `/api/bookings/upload-proof`)
+### Netlify + API (fix 404 on `/api/messages`, `/api/bookings/...`, auth, etc.)
 
-The browser calls `/api/...` on your Netlify hostname. Netlify must either **proxy** those paths to Express or the build must set **`VITE_API_URL`** to your public API (ending in `/api`).
+The browser calls `/api/...` on your Netlify hostname. **POST** requests (contact form, register, proof upload) are **not** covered by a client-side router: if Netlify does not proxy `/api/*` to your Express app, you get **404** in production.
 
-**Option A (recommended):** In Netlify → Environment variables, set **`NETLIFY_API_ORIGIN`** to your API host only, for example `https://nziza-api.onrender.com` (no `/api` suffix). The prebuild step writes `frontend/public/_redirects` so `/api/*` is proxied to your backend. Redeploy.
+**Option A (recommended):** In Netlify → Site configuration → Environment variables, set **`NETLIFY_API_ORIGIN`** to your API **origin only**, for example `https://nziza-api.onrender.com` (no `/api` suffix, no trailing slash). Each build runs `scripts/netlify-prebuild.mjs`, which writes `frontend/public/_redirects` with `/api/*` → your backend **before** the `/* → /index.html` SPA rule. **Save the variable, then trigger a new deploy** (Clear cache and deploy if unsure).
 
-**Option B:** Set **`VITE_API_URL`** at build time to your full API base, e.g. `https://nziza-api.onrender.com/api`, then rebuild.
+**Option B:** Set **`VITE_API_URL`** at build time to your full public API base, e.g. `https://nziza-api.onrender.com/api` (must **not** be `localhost` — production builds ignore localhost). Rebuild.
+
+**Do not** leave `VITE_API_URL=http://localhost:4000/api` on Netlify production: the app strips it and falls back to same-origin `/api`, which still needs Option A or a public Option B.
 
 If the Netlify UI **overrides** the build command, either remove that override so `netlify.toml` `[build].command` runs, or set the command to:  
 `node scripts/netlify-prebuild.mjs && npm --workspace frontend run build`
+
+Backend **CORS**: if you use Option B (browser calls the API host directly), set `CORS_ORIGIN` on the API to include your Netlify site URL. Option A (proxy) keeps the browser on the Netlify origin for `/api`, so CORS is less of an issue for those routes.
 
 Recommended:
 - Use managed Postgres pooling

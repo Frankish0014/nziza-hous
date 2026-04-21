@@ -1,0 +1,2 @@
+# Overwritten on Netlify by scripts/netlify-prebuild.mjs. Default SPA fallback for local/preview builds.
+/*  /index.html  200
