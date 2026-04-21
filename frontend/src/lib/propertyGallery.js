@@ -4,7 +4,7 @@
 
 import studioSpace from '../images/salon.jpeg';
 import loungeArea from '../images/appartment.jpeg';
-import bedroomStay from '../images/5.jpeg';
+import bedroomStay from '../images/bed.jpeg';
 import bedroomWorkspace from '../images/6.jpeg';
 import interiorFlooring from '../images/Aerobic.jpeg';
 import gymFloor from '../images/reception.jpeg';
