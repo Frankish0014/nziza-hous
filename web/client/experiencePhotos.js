@@ -1,17 +1,13 @@
-/** Thematic Unsplash photos by venue kind — same art direction as the home “On the property” cards. */
+/** Venue imagery from web/public/images — keep aligned with frontend/src/lib/experiencePhotos.js */
 
-export function experiencePhoto(id, w = 800, h = 520) {
-  return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=85`;
-}
-
-export const COFFEE_THEMATIC_OBJECT_POSITION = 'center 72%';
+export const COFFEE_THEMATIC_OBJECT_POSITION = 'center 48%';
 
 export const EXPERIENCE_IMAGE = {
-  gym: experiencePhoto('photo-1603503364272-6e28e046b37a', 960, 960),
+  gym: '/images/gym.jpeg',
   apartment: '/images/appartment.jpeg',
-  coffee: experiencePhoto('photo-1509042239860-f550ce710b93', 1200, 900),
-  sauna: experiencePhoto('photo-1540555700478-4be289fbecef'),
-  massage: experiencePhoto('photo-1675159364445-80fa5e54314a'),
+  coffee: '/images/nziza salon.jpeg',
+  sauna: '/images/entrance.jpeg',
+  massage: '/images/bed.jpeg',
   lodge: '/images/lodge.jpeg',
 };
 
