@@ -5,9 +5,8 @@
 import apartmentPhoto from '../images/appartment.jpeg';
 import gymPhoto from '../images/gym.jpeg';
 import lodgePhoto from '../images/lodge.jpeg';
-import massagePhoto from '../images/massage-placeholder.jpg';
-
-const saunaPhoto = 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&h=900&q=85';
+import massagePhoto from '../images/massage.jpeg';
+import saunaPhoto from '../images/souna.jpeg';
 const coffeeSalonPhoto = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&h=900&q=85';
 
 /** Fine-tune focal point for the coffee/lounge hero crop on cards */

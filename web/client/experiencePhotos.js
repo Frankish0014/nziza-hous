@@ -6,8 +6,8 @@ export const EXPERIENCE_IMAGE = {
   gym: '/images/gym.jpeg',
   apartment: '/images/appartment.jpeg',
   coffee: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&h=900&q=85',
-  sauna: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&h=900&q=85',
-  massage: '/images/massage-placeholder.jpg',
+  sauna: '/images/souna.jpeg',
+  massage: '/images/massage.jpeg',
   lodge: '/images/lodge.jpeg',
 };
 
