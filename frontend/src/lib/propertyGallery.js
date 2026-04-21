@@ -14,8 +14,8 @@ import salonSide from '../images/nziza side salon.jpeg';
 export const PROPERTY_GALLERY_ITEMS = [
   {
     src: studioSpace,
-    alt: 'Bright studio and training space at Nziza House',
-    caption: 'Studio space',
+    alt: 'Guest seating area at Nziza House',
+    caption: 'Guest Seats',
   },
   {
     src: loungeArea,
