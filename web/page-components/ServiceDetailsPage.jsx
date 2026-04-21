@@ -10,6 +10,50 @@ function formatType(type) {
   return String(type).replace(/_/g, ' ');
 }
 
+function getPresentationContent(service) {
+  const t = String(service?.type || '').toLowerCase();
+  if (t.includes('gym')) {
+    return {
+      name: 'Nziza Gym',
+      description: 'Train in a premium fitness space with modern equipment and a motivating atmosphere built for real progress.',
+    };
+  }
+  if (t.includes('apartment') || t.includes('apt')) {
+    return {
+      name: 'Nziza Apartments',
+      description: 'Designer apartments for short or long stays with privacy, comfort, and a true second-home feel.',
+    };
+  }
+  if (t.includes('coffee')) {
+    return {
+      name: 'Nziza Coffee Shop',
+      description: 'Artisan coffee, fresh bites, and calm corners for meetings, remote work, and unhurried conversation.',
+    };
+  }
+  if (t.includes('sauna')) {
+    return {
+      name: 'Restorative Sauna',
+      description: 'Warm, restorative heat sessions designed to improve circulation, relax muscles, and reset the mind.',
+    };
+  }
+  if (t.includes('massage')) {
+    return {
+      name: 'Therapeutic Massage',
+      description: 'Personalized bodywork that releases tension, supports recovery, and leaves you grounded.',
+    };
+  }
+  if (t.includes('lodge')) {
+    return {
+      name: 'Nziza Lodge',
+      description: 'Serene lodge stays blending hospitality, comfort, and a peaceful escape from the everyday.',
+    };
+  }
+  return {
+    name: service?.name || 'Nziza Experience',
+    description: service?.description || '',
+  };
+}
+
 function getLocalGalleryMedia(service) {
   const serviceName = String(service?.name || '').toLowerCase();
   const serviceType = String(service?.type || '').toLowerCase();
@@ -104,6 +148,7 @@ export default function ServiceDetailsPage({ id }) {
   const media = [...apiMedia, ...localMedia].filter(
     (item, index, arr) => arr.findIndex((candidate) => candidate.url === item.url) === index,
   );
+  const presentation = getPresentationContent(service);
   const details = getServiceDetails(service.type);
   const standardPriceText = service.price ? `${service.currency} ${service.price} ${details.standardUnit}` : 'Custom pricing';
 
@@ -114,9 +159,9 @@ export default function ServiceDetailsPage({ id }) {
           <ScrollReveal>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-accent)]">{formatType(service.type)}</p>
             <h1 className="font-display mt-4 max-w-4xl text-4xl font-medium tracking-tight text-[var(--nh-ink)] md:text-6xl">
-              {service.name}
+              {presentation.name}
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[var(--nh-ink-muted)]">{service.description}</p>
+            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[var(--nh-ink-muted)]">{presentation.description}</p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <span className="inline-flex rounded-full border border-[var(--nh-border)] bg-white/90 px-5 py-2 font-semibold text-[var(--nh-accent)] shadow-sm">
                 {service.price ? `${service.currency} ${service.price}` : 'Custom pricing'}

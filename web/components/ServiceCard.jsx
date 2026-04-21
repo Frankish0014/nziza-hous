@@ -11,16 +11,61 @@ function formatType(type) {
   return String(type).replace(/_/g, ' ');
 }
 
+function getPresentationContent(service) {
+  const t = String(service?.type || '').toLowerCase();
+  if (t.includes('gym')) {
+    return {
+      name: 'Nziza Gym',
+      description: 'Train in a premium fitness space with modern equipment and a motivating atmosphere built for real progress.',
+    };
+  }
+  if (t.includes('apartment') || t.includes('apt')) {
+    return {
+      name: 'Nziza Apartments',
+      description: 'Designer apartments for short or long stays with privacy, comfort, and a true second-home feel.',
+    };
+  }
+  if (t.includes('coffee')) {
+    return {
+      name: 'Nziza Coffee Shop',
+      description: 'Artisan coffee, fresh bites, and calm corners for meetings, remote work, and unhurried conversation.',
+    };
+  }
+  if (t.includes('sauna')) {
+    return {
+      name: 'Restorative Sauna',
+      description: 'Warm, restorative heat sessions designed to improve circulation, relax muscles, and reset the mind.',
+    };
+  }
+  if (t.includes('massage')) {
+    return {
+      name: 'Therapeutic Massage',
+      description: 'Personalized bodywork that releases tension, supports recovery, and leaves you grounded.',
+    };
+  }
+  if (t.includes('lodge')) {
+    return {
+      name: 'Nziza Lodge',
+      description: 'Serene lodge stays blending hospitality, comfort, and a peaceful escape from the everyday.',
+    };
+  }
+  return {
+    name: service?.name || 'Nziza Experience',
+    description: service?.description || '',
+  };
+}
+
 export default function ServiceCard({ service }) {
   const image = getThematicExperienceImage(service.type);
   const objectPosition = getThematicImageObjectPosition(service.type);
+  const presentation = getPresentationContent(service);
 
   return (
     <article className="nh-shine-wrap card-rise group flex h-full flex-col overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-cream)]/80 shadow-sm">
       <div className="relative overflow-hidden">
         <img
           src={image}
-          alt={service.name}
+          alt={presentation.name}
           className="h-60 w-full object-cover transition duration-700 ease-out group-hover:scale-[1.06]"
           style={objectPosition ? { objectPosition } : undefined}
           loading="lazy"
@@ -31,8 +76,8 @@ export default function ServiceCard({ service }) {
         </span>
       </div>
       <div className="flex flex-1 flex-col space-y-3 p-5 md:p-6">
-        <h3 className="font-display text-xl font-medium text-[var(--nh-ink)]">{service.name}</h3>
-        <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[var(--nh-ink-muted)]">{service.description}</p>
+        <h3 className="font-display text-xl font-medium text-[var(--nh-ink)]">{presentation.name}</h3>
+        <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[var(--nh-ink-muted)]">{presentation.description}</p>
         <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
           <span className="text-sm font-semibold text-[var(--nh-accent)]">
             {service.price ? `${service.currency} ${service.price}` : 'Custom pricing'}
