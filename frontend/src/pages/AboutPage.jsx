@@ -46,8 +46,8 @@ export default function AboutPage() {
           </ScrollReveal>
           <ScrollReveal delay={180}>
             <div className="mt-10 flex flex-wrap gap-3">
-              <Link to="/booking" className="btn-primary rounded-full px-7 py-3 text-sm font-semibold">
-                Start a booking
+              <Link to="/contact" className="btn-primary rounded-full px-7 py-3 text-sm font-semibold">
+                Contact us to book
               </Link>
               <Link
                 to="/services"

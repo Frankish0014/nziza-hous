@@ -132,8 +132,8 @@ export default function HomePage() {
             </ScrollReveal>
             <ScrollReveal delay={200}>
               <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Link href="/booking" className="btn-primary rounded-full px-8 py-3.5 text-sm font-semibold shadow-lg">
-                  Reserve your experience
+                <Link href="/contact" className="btn-primary rounded-full px-8 py-3.5 text-sm font-semibold shadow-lg">
+                  Contact us to book
                 </Link>
                 <Link href="/services"
                   className="rounded-full border-2 border-[var(--nh-border)] bg-white/90 px-8 py-3.5 text-sm font-semibold text-[var(--nh-ink)] shadow-sm transition hover:border-[var(--nh-accent)]/40 hover:text-[var(--nh-accent)]"
@@ -213,7 +213,7 @@ export default function HomePage() {
               </div>
               <div className="flex flex-wrap gap-3 lg:justify-end">
                 <Link
-                  href="/booking"
+                  href="/contact"
                   className="inline-flex items-center rounded-full bg-[var(--nh-accent)] px-6 py-3 text-sm font-semibold text-[var(--nh-deep)] transition hover:bg-[#f4b286]"
                 >
                   Book your visit

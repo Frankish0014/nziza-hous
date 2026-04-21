@@ -78,8 +78,8 @@ export default function AdminBookingsPage() {
           >
             Full dashboard
           </Link>
-          <Link href="/booking" className="btn-primary rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider">
-            Public booking page
+          <Link href="/contact" className="btn-primary rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider">
+            Public contact page
           </Link>
         </div>
       </div>

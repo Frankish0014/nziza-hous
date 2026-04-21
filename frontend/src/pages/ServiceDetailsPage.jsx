@@ -167,11 +167,8 @@ export default function ServiceDetailsPage() {
               <span className="inline-flex rounded-full border border-[var(--nh-border)] bg-white/90 px-5 py-2 font-semibold text-[var(--nh-accent)] shadow-sm">
                 Custom pricing
               </span>
-              <Link
-                to="/booking"
-                className="btn-primary rounded-full px-8 py-3 text-sm font-semibold"
-              >
-                Book this experience
+              <Link to="/contact" className="btn-primary rounded-full px-8 py-3 text-sm font-semibold">
+                Contact us for this experience
               </Link>
               <Link
                 to="/services"
@@ -252,8 +249,8 @@ export default function ServiceDetailsPage() {
                 Choose a time slot, upload payment proof, and we&apos;ll confirm your visit personally.
               </p>
             </div>
-            <Link to="/booking" className="btn-primary shrink-0 rounded-full px-8 py-3 text-sm font-semibold">
-              Continue to booking
+            <Link to="/contact" className="btn-primary shrink-0 rounded-full px-8 py-3 text-sm font-semibold">
+              Contact concierge
             </Link>
           </div>
         </ScrollReveal>

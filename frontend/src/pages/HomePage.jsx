@@ -132,8 +132,8 @@ export default function HomePage() {
             </ScrollReveal>
             <ScrollReveal delay={200}>
               <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Link to="/booking" className="btn-primary rounded-full px-8 py-3.5 text-sm font-semibold shadow-lg">
-                  Reserve your experience
+                <Link to="/contact" className="btn-primary rounded-full px-8 py-3.5 text-sm font-semibold shadow-lg">
+                  Contact us to book
                 </Link>
                 <Link
                   to="/services"
@@ -214,7 +214,7 @@ export default function HomePage() {
               </div>
               <div className="flex flex-wrap gap-3 lg:justify-end">
                 <Link
-                  to="/booking"
+                  to="/contact"
                   className="inline-flex items-center rounded-full bg-[var(--nh-accent)] px-6 py-3 text-sm font-semibold text-[var(--nh-deep)] transition hover:bg-[#f4b286]"
                 >
                   Book your visit

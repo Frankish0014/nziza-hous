@@ -48,11 +48,12 @@ export default function ContactPage() {
             <li className="flex gap-3">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-amber-500" aria-hidden />
               <span>
-                <strong className="text-[var(--nh-ink)]">Prefer to book solo?</strong> Use the{' '}
-                <Link href="/booking" className="font-semibold text-[var(--nh-accent)] underline-offset-4 hover:underline">
-                  self-serve reservation
+                <strong className="text-[var(--nh-ink)]">Booking update:</strong> online booking is temporarily paused.
+                Explore the{' '}
+                <Link href="/services" className="font-semibold text-[var(--nh-accent)] underline-offset-4 hover:underline">
+                  experiences
                 </Link>{' '}
-                flow anytime.
+                and contact concierge for reservations.
               </span>
             </li>
           </ul>

@@ -41,7 +41,7 @@ export default function Footer() {
               calm luxury without the noise.
             </p>
             <Link
-              to="/booking"
+              to="/contact"
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--nh-accent)] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-lg shadow-black/25 transition hover:brightness-110"
             >
               Plan your visit
