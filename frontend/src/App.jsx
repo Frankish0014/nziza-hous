@@ -9,7 +9,6 @@ import ServicesPage from './pages/ServicesPage';
 import ServiceDetailsPage from './pages/ServiceDetailsPage';
 import ContactPage from './pages/ContactPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
-import AuthPage from './pages/AuthPage';
 
 function App() {
   return (
@@ -24,7 +23,7 @@ function App() {
         <Route path="/services/:id" element={<ServiceDetailsPage />} />
         <Route path="/booking" element={<Navigate to="/contact" replace />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth" element={<Navigate to="/contact" replace />} />
         <Route
           path="/admin"
           element={

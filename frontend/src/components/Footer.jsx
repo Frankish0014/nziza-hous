@@ -15,7 +15,6 @@ const columns = [
     links: [
       { to: '/', label: 'Overview' },
       { to: '/about', label: 'Our story' },
-      { to: '/auth', label: 'Guest login' },
     ],
   },
 ];

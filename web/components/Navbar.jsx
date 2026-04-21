@@ -44,7 +44,7 @@ function NavItem({ href, label, onNavigate, mobile }) {
 }
 
 export default function Navbar() {
-  const { isAuthenticated, isAdmin, logout } = useAuth();
+  const { isAdmin } = useAuth();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -128,22 +128,6 @@ export default function Navbar() {
               </Link>
             </>
           )}
-          {isAuthenticated ? (
-            <button
-              type="button"
-              onClick={logout}
-              className="ml-2 rounded-full border border-[var(--nh-border)] bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--nh-ink)] transition hover:border-[var(--nh-accent)]/40 hover:text-[var(--nh-accent)]"
-            >
-              Log out
-            </button>
-          ) : (
-            <Link
-              href="/auth"
-              className="btn-primary ml-2 rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.1em]"
-            >
-              Sign in
-            </Link>
-          )}
         </nav>
       </div>
 
@@ -187,28 +171,6 @@ export default function Navbar() {
             </Link>
           </>
         )}
-        <div className="mt-4 flex flex-col gap-2 border-t border-[var(--nh-border)] pt-4">
-          {isAuthenticated ? (
-            <button
-              type="button"
-              onClick={() => {
-                logout();
-                setMenuOpen(false);
-              }}
-              className="rounded-2xl border border-[var(--nh-border)] py-3.5 text-sm font-semibold text-[var(--nh-ink)]"
-            >
-              Log out
-            </button>
-          ) : (
-            <Link
-              href="/auth"
-              onClick={() => setMenuOpen(false)}
-              className="btn-primary rounded-2xl py-3.5 text-center text-sm font-semibold"
-            >
-              Sign in
-            </Link>
-          )}
-        </div>
       </nav>
     </header>
   );

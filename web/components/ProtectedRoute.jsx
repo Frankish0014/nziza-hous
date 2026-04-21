@@ -9,7 +9,7 @@ export default function ProtectedRoute({ children, adminOnly = false }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) router.replace('/auth');
+    if (!isAuthenticated) router.replace('/contact');
     else if (adminOnly && !isAdmin) router.replace('/');
   }, [isAuthenticated, isAdmin, adminOnly, router]);
 
