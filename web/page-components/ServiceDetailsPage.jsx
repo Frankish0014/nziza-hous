@@ -150,7 +150,7 @@ export default function ServiceDetailsPage({ id }) {
   );
   const presentation = getPresentationContent(service);
   const details = getServiceDetails(service.type);
-  const standardPriceText = service.price ? `${service.currency} ${service.price} ${details.standardUnit}` : 'Custom pricing';
+  const standardPriceText = 'Custom pricing';
 
   return (
     <main className="pb-20">
@@ -164,7 +164,7 @@ export default function ServiceDetailsPage({ id }) {
             <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[var(--nh-ink-muted)]">{presentation.description}</p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <span className="inline-flex rounded-full border border-[var(--nh-border)] bg-white/90 px-5 py-2 font-semibold text-[var(--nh-accent)] shadow-sm">
-                {service.price ? `${service.currency} ${service.price}` : 'Custom pricing'}
+                Custom pricing
               </span>
               <Link href="/booking"
                 className="btn-primary rounded-full px-8 py-3 text-sm font-semibold"

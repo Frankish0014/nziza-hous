@@ -182,7 +182,7 @@ export default function BookingPage() {
       ? availability.find((d) => d.date === form.bookingDate)?.slots || []
       : [];
   const selectedService = services.find((s) => String(s.id) === String(form.serviceId));
-  const amountLabel = selectedService?.price ? `${selectedService.currency} ${selectedService.price}` : 'Custom pricing';
+  const amountLabel = 'Custom pricing';
   const selectedPaymentDetails = PAYMENT_DETAILS[form.paymentMethod];
 
   const formatDateLabel = (iso) => {

@@ -77,9 +77,7 @@ export default function ServiceCard({ service }) {
         <h3 className="font-display text-xl font-medium text-[var(--nh-ink)]">{presentation.name}</h3>
         <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[var(--nh-ink-muted)]">{presentation.description}</p>
         <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-          <span className="text-sm font-semibold text-[var(--nh-accent)]">
-            {service.price ? `${service.currency} ${service.price}` : 'Custom pricing'}
-          </span>
+          <span className="text-sm font-semibold text-[var(--nh-accent)]">Custom pricing</span>
           <Link
             to={`/services/${service.id}`}
             className="inline-flex items-center gap-1 rounded-full border border-[var(--nh-border)] bg-white/90 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--nh-ink)] transition hover:border-[var(--nh-accent)]/45 hover:text-[var(--nh-accent)]"

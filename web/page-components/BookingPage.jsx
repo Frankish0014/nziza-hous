@@ -177,7 +177,7 @@ export default function BookingPage() {
 
   const hasSelectableSlot = slotRows.some((s) => !s.booked && !s.past);
   const selectedService = services.find((s) => String(s.id) === String(form.serviceId));
-  const amountLabel = selectedService?.price ? `${selectedService.currency} ${selectedService.price}` : 'Custom pricing';
+  const amountLabel = 'Custom pricing';
   const selectedPaymentDetails = PAYMENT_DETAILS[form.paymentMethod];
 
   const formatDateLabel = (iso) => {
