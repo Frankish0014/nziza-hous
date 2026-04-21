@@ -7,7 +7,6 @@ const columns = [
     title: 'Visit',
     links: [
       { to: '/services', label: 'Experiences' },
-      { to: '/booking', label: 'Reservations' },
       { to: '/contact', label: 'Concierge' },
     ],
   },

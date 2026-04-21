@@ -1,5 +1,5 @@
-import BookingPage from '@/page-components/BookingPage';
+import { redirect } from 'next/navigation';
 
 export default function Page() {
-  return <BookingPage />;
+  redirect('/contact');
 }
