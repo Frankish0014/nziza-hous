@@ -2,7 +2,7 @@
  * Additional on-property photography for the home page gallery strip.
  */
 
-import studioSpace from '../images/2.jpeg';
+import studioSpace from '../images/salon.jpeg';
 import loungeArea from '../images/appartment.jpeg';
 import bedroomStay from '../images/5.jpeg';
 import bedroomWorkspace from '../images/6.jpeg';
