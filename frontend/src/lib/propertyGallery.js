@@ -7,7 +7,7 @@ import loungeArea from '../images/appartment.jpeg';
 import bedroomStay from '../images/5.jpeg';
 import bedroomWorkspace from '../images/6.jpeg';
 import interiorFlooring from '../images/Aerobic.jpeg';
-import gymFloor from '../images/Gym 1.jpeg';
+import gymFloor from '../images/reception.jpeg';
 import gymEquipment from '../images/Gym 2.jpeg';
 import salonSide from '../images/nziza side salon.jpeg';
 
@@ -39,8 +39,8 @@ export const PROPERTY_GALLERY_ITEMS = [
   },
   {
     src: gymFloor,
-    alt: 'Fitness floor with treadmills at Nziza House',
-    caption: 'Cardio deck',
+    alt: 'Reception seating area at Nziza House',
+    caption: 'Reception',
   },
   {
     src: gymEquipment,
