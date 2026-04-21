@@ -323,13 +323,13 @@ export default function HomePage() {
             {PROPERTY_GALLERY_ITEMS.map((item, idx) => (
               <ScrollReveal key={item.alt} delay={idx * 40}>
                 <figure className="group overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-cream)]/90 shadow-sm">
-                  <div className="aspect-[4/5] overflow-hidden">
+                  <div className="h-64 overflow-hidden bg-white/90 sm:h-72">
                     <img
                       src={item.src}
                       alt={item.alt}
                       width={600}
                       height={750}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]"
+                      className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.02]"
                       loading="lazy"
                       decoding="async"
                     />
