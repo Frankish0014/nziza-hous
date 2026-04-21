@@ -329,7 +329,7 @@ export default function HomePage() {
                       alt={item.alt}
                       width={600}
                       height={750}
-                      className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.02]"
+                      className="h-full w-full object-contain object-top transition duration-500 group-hover:scale-[1.02]"
                       loading="lazy"
                       decoding="async"
                     />
