@@ -308,7 +308,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-[var(--nh-border)] bg-gradient-to-b from-[var(--nh-bg)] to-[var(--nh-bg-warm)] py-20 md:py-28">
+      <section className="border-y border-[var(--nh-border)] bg-[var(--nh-bg)] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-4">
           <ScrollReveal>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-accent)]">On the ground</p>
@@ -322,8 +322,8 @@ export default function HomePage() {
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {PROPERTY_GALLERY_ITEMS.map((item, idx) => (
               <ScrollReveal key={item.alt} delay={idx * 40}>
-                <figure className="group overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-cream)]/90 shadow-sm">
-                  <div className="h-64 overflow-hidden bg-white/90 sm:h-72">
+                <figure className="group overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-bg-warm)] shadow-sm">
+                  <div className="h-64 overflow-hidden bg-[var(--nh-bg)] sm:h-72">
                     <img
                       src={item.src}
                       alt={item.alt}
@@ -334,7 +334,7 @@ export default function HomePage() {
                       decoding="async"
                     />
                   </div>
-                  <figcaption className="border-t border-[var(--nh-border)] bg-white/90 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--nh-ink-muted)]">
+                  <figcaption className="border-t border-[var(--nh-border)] bg-[var(--nh-bg)] px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--nh-ink-muted)]">
                     {item.caption}
                   </figcaption>
                 </figure>

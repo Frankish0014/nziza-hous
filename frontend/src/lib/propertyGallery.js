@@ -15,7 +15,7 @@ export const PROPERTY_GALLERY_ITEMS = [
   {
     src: studioSpace,
     alt: 'Guest seating area at Nziza House',
-    caption: 'Guest Seats',
+    caption: 'Appartment Salon seats',
   },
   {
     src: loungeArea,
@@ -50,6 +50,6 @@ export const PROPERTY_GALLERY_ITEMS = [
   {
     src: salonSide,
     alt: 'Side view of the salon seating area',
-    caption: 'Salon',
+    caption: 'Reception slaon seats',
   },
 ];
