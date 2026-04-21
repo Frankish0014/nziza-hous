@@ -12,7 +12,7 @@ function formatType(type) {
 }
 
 export default function ServiceCard({ service }) {
-  const image = service.media?.[0]?.url || getThematicExperienceImage(service.type);
+  const image = getThematicExperienceImage(service.type);
   const objectPosition = getThematicImageObjectPosition(service.type);
 
   return (
