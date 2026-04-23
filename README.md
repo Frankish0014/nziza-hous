@@ -110,8 +110,22 @@ npm run dev
 ## Deployment
 
 - Frontend: Netlify (see root `netlify.toml` and `scripts/netlify-prebuild.mjs`)
+- Frontend (alternative): Vercel (`web` Next.js app)
 - Backend: Render or Railway
 - PostgreSQL: Supabase or Neon
+
+### Vercel (Next.js in monorepo)
+
+This repository includes a root `vercel.json` that forces Next.js deployment through workspace scripts.
+
+Project settings in Vercel should be:
+
+- Root Directory: repository root (do not switch to `backend` or `frontend`)
+- Framework Preset: Next.js
+- Build Command: leave empty (uses `vercel.json`) or `npm run build`
+- Output Directory: leave empty (important)
+
+If you previously set Output Directory to `public`, remove it and redeploy.
 
 ### Netlify + API (fix 404 on `/api/messages`, `/api/bookings/...`, auth, etc.)
 
