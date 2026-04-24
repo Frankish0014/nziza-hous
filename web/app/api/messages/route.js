@@ -8,14 +8,10 @@ import { env } from '@/lib/server/config/env.js';
 
 export async function POST(request) {
   try {
-    if (env.skipDatabaseBootstrap) {
-      return jsonError('Database is not configured', 503);
-    }
-    await ensureDbReady();
     const body = await request.json();
     const err = await validateRequest(createMessageSchema, { body });
     if (err) return err;
-    const data = await messageService.createMessage(body);
+    const data = await messageService.submitPublicContactMessage(body);
     return jsonSuccess(data, 'Message submitted', 201);
   } catch (e) {
     return handleRouteError(e);
