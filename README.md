@@ -116,16 +116,29 @@ npm run dev
 
 ### Vercel (Next.js in monorepo)
 
-This repository includes a root `vercel.json` that forces Next.js deployment through workspace scripts.
+**Why you see *No Output Directory named "public" found*:** Vercel is treating the project like a static **Other** preset (default output is `public`). Next.js must use the **Next.js** preset with **no** custom Output Directory.
 
-Project settings in Vercel should be:
+**Project → Settings → Git:** connect **`Frankish0014/nziza-hous`**, branch **`main`**. If logs show a different repo or an old commit, the Vercel project is not wired to this repository.
 
-- Root Directory: repository root (do not switch to `backend` or `frontend`)
-- Framework Preset: Next.js
-- Build Command: leave empty (uses `vercel.json`) or `npm run build`
-- Output Directory: leave empty (important)
+### Option A — Deploy from repository root (matches current `npm run build` workspace flow)
 
-If you previously set Output Directory to `public`, remove it and redeploy.
+**Root Directory:** leave empty (repository root).
+
+**Build & Deployment:**
+
+- Framework Preset: **Next.js** (or rely on root `vercel.json` `framework`)
+- Build Command: leave empty so root `vercel.json` runs `npm run build`, or set `npm run build` explicitly
+- **Output Directory: leave empty** (never `public` or `.next`)
+
+Root `vercel.json` pins `framework: "nextjs"` and the workspace build.
+
+### Option B — Root Directory `web` ([monorepo guidance](https://vercel.com/docs/monorepos))
+
+Use this if you prefer Vercel to treat `web` as the app root. Vercel may restrict access outside `web` at runtime; configure secrets in the Vercel dashboard instead of relying on paths like `../backend/.env`.
+
+**Build & Deployment:** Framework **Next.js**, Output Directory **empty**.
+
+`web/vercel.json` only sets `framework: "nextjs"`.
 
 ### Netlify + API (fix 404 on `/api/messages`, `/api/bookings/...`, auth, etc.)
 
