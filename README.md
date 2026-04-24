@@ -136,6 +136,8 @@ On Vercel, `postbuild` runs `scripts/vercel-sync-root-public.mjs` when `VERCEL=1
 
 ### Option B — Root Directory `web` ([monorepo guidance](https://vercel.com/docs/monorepos))
 
+The live marketing site on Vercel is the Next.js app in **`web/`**, not the Vite SPA in **`frontend/`** (Netlify). Update pages and assets under **`web/`** for production, or mirror changes from `frontend` when both exist.
+
 Use this if you prefer Vercel to treat `web` as the app root. Vercel may restrict access outside `web` at runtime; configure secrets in the Vercel dashboard instead of relying on paths like `../backend/.env`.
 
 **Build & Deployment:** Framework **Next.js**, Output Directory **empty**.

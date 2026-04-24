@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { COFFEE_THEMATIC_OBJECT_POSITION, EXPERIENCE_IMAGE } from '@/client/experiencePhotos';
+import { PROPERTY_GALLERY_ITEMS } from '@/client/propertyGallery';
 import ScrollReveal from '@/components/ScrollReveal';
 
 const marqueeItems = [
@@ -307,37 +308,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-[var(--nh-border)] bg-gradient-to-br from-[var(--nh-bg-warm)] via-[var(--nh-bg)] to-[var(--nh-sage-soft)] py-20 md:py-28">
+      <section className="border-y border-[var(--nh-border)] bg-[var(--nh-bg)] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-            <ScrollReveal>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-sage)]">Guest journey</p>
-              <h2 className="font-display mt-4 text-3xl font-medium text-[var(--nh-ink)] md:text-4xl">
-                Booking that respects your time
-              </h2>
-              <p className="mt-4 text-[var(--nh-ink-muted)]">
-                No maze of forms — just clear steps, human confirmation, and the little details handled before you arrive.
-              </p>
-            </ScrollReveal>
-            <div className="space-y-4">
-              {[
-                ['01', 'Choose', 'Pick gym time, apartment nights, spa sessions, or lodge stays.'],
-                ['02', 'Confirm', 'Share contact details and payment proof securely in one flow.'],
-                ['03', 'Arrive', 'We confirm by email & phone and prepare your space with care.'],
-              ].map(([step, title, desc], i) => (
-                <ScrollReveal key={step} delay={i * 80}>
-                  <article className="group flex gap-5 rounded-3xl border border-[var(--nh-border)] bg-white/75 p-5 shadow-sm transition hover:border-[var(--nh-accent)]/35 hover:shadow-md md:p-6">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[var(--nh-deep)] font-display text-lg font-medium text-[#f5ebe0] shadow-inner">
-                      {step}
-                    </div>
-                    <div>
-                      <h3 className="font-display text-lg font-medium text-[var(--nh-ink)]">{title}</h3>
-                      <p className="mt-1 text-sm leading-relaxed text-[var(--nh-ink-muted)]">{desc}</p>
-                    </div>
-                  </article>
-                </ScrollReveal>
-              ))}
-            </div>
+          <ScrollReveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--nh-accent)]">On the ground</p>
+            <h2 className="font-display mt-4 max-w-2xl text-3xl font-medium tracking-tight text-[var(--nh-ink)] md:text-4xl">
+              A few more views of the address
+            </h2>
+            <p className="mt-4 max-w-2xl text-[var(--nh-ink-muted)] md:text-lg">
+              Real spaces — movement studios, lounges, suites, and training floors — captured as guests experience them.
+            </p>
+          </ScrollReveal>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {PROPERTY_GALLERY_ITEMS.map((item, idx) => (
+              <ScrollReveal key={item.alt} delay={idx * 40}>
+                <figure className="group overflow-hidden rounded-3xl border border-[var(--nh-border)] bg-[var(--nh-bg-warm)] shadow-sm">
+                  <div className="overflow-hidden bg-[var(--nh-bg)]">
+                    <img
+                      src={item.src}
+                      alt={item.alt}
+                      className="block h-auto w-full max-w-full transition duration-500 group-hover:scale-[1.02]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <figcaption className="border-t border-[var(--nh-border)] bg-[var(--nh-bg)] px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--nh-ink-muted)]">
+                    {item.caption}
+                  </figcaption>
+                </figure>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>
