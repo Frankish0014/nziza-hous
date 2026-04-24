@@ -132,6 +132,8 @@ npm run dev
 
 Root `vercel.json` pins `framework: "nextjs"` and the workspace build.
 
+On Vercel, `postbuild` runs `scripts/vercel-sync-root-public.mjs` when `VERCEL=1`, copying `web/public` to a root `public/` folder so misconfigured projects that still expect a root `public` output pass the post-build check. **Framework Preset should still be Next.js** so the full app (including `/api/*`) deploys correctly.
+
 ### Option B — Root Directory `web` ([monorepo guidance](https://vercel.com/docs/monorepos))
 
 Use this if you prefer Vercel to treat `web` as the app root. Vercel may restrict access outside `web` at runtime; configure secrets in the Vercel dashboard instead of relying on paths like `../backend/.env`.

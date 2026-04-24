@@ -18,6 +18,7 @@
     "dev:frontend": "npm run dev --prefix frontend",
     "db:check": "npm run db:check --prefix backend",
     "build": "npm run build -w web",
+    "postbuild": "node scripts/vercel-sync-root-public.mjs",
     "build:frontend": "npm run build -w frontend",
     "lint": "npm run lint -w web",
     "lint:frontend": "npm run lint -w frontend",
